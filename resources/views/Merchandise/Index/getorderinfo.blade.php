@@ -27,14 +27,16 @@
 		<ul class="addr-detail">
 			<li class="addr-item">
 			@foreach($rderdata as $k=>$a)
+			@if($a['is_default'] == 2)
 			<div>
 				<div class="con name"  attr_id="{{$a['id']}}"><a href="javascript:;" >{{$a["user_name"]}}<span title="点击取消选择">&nbsp;</a></div>
 				<div class="con address">{{$a['province']}}-{{$a['city']}}-{{$a['area']}} {{$a["paddress"]}} <span>{{$a['tel']}}</span>
-				<span class="base">@if($a['is_default'] == 1) 默认收货 @endif</span>
+				<span class="base">@if($a['is_default'] == 2) 默认收货 @endif</span>
 				<span class="edittext"><a href="{{url('/shop/homesettingaddress')}}">编辑</a>&nbsp;&nbsp;<a href="{{url('/shop/homesettingaddress')}}">删除</a></span>
 			</div>
 				<div class="clearfix"></div>
 			</div>
+			 @endif
 			@endforeach
 			</li>
 		</ul>

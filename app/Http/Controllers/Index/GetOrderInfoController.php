@@ -39,7 +39,7 @@ class GetOrderInfoController extends Controller
 		$where = [
 				"is_del"=>"0",
 				"user_id"=>$user_id,
-				"is_default"=>'1',
+				"is_default"=>'2',
 		];
 		if(AddressModel::where($where)->get() == null){
 			dd("请联系管理员，QQ");
