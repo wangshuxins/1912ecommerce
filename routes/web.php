@@ -1,0 +1,167 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+//Route::get('/', function () {
+//   return view('welcome');
+//});
+//前台路由
+Route::any('/{id?}',"Index\IndexController@index");//首页
+Route::prefix('shop')->group(function(){
+	Route::any('/cart/{buy?}/{totall?}',"Index\CartController@cart");//购物车;
+	Route::any('/buycar/changeNumber',"Index\CartController@changeNumber");//更改购买数量
+	Route::any('/buycar/getTotal',"Index\CartController@getTotal");//获取小计
+	Route::any('/buycar/getMoney',"Index\CartController@getMoney");//获取总价
+	Route::any('/car/del/{id?}',"Index\CartController@del");//购物车软删除;
+	Route::any('/buycar/carDel',"Index\CartController@carDel");//购物车批量软删除;
+	Route::any('/car/chongxin/{id?}',"Index\CartController@chongxin");//重新加入购物车;
+	Route::get('/cooperation',"Index\CooperationController@cooperation");//招商合作;
+	Route::get('/getorderinfo/{id}',"Index\GetOrderInfoController@getorderinfo");//结算页;
+	Route::any('/orderaddress',"Index\GetOrderInfoController@orderaddress");//订单地址;
+    Route::get('/homeindex',"Index\HomeIndexController@homeindex");//我的订单;
+    Route::get('/homeorderdetail',"Index\HomeIndexController@homeorderdetail");//订单详情;
+    Route::get('/homeorderevaluate',"Index\HomeIndexController@homeorderevaluate");//待评价
+	Route::get('/homeorderpay',"Index\HomeIndexController@homeorderpay");//待付款
+	Route::get('/homeorderreceive',"Index\HomeIndexController@homeorderreceive");//待收货
+	Route::get('/homeordersend',"Index\HomeIndexController@homeordersend");//待发货;
+	Route::get('/homepersoncollect',"Index\HomePersonCollect@homepersoncollect");//我的收藏
+    Route::get('/homepersonfootmark',"Index\HomePersonCollect@homepersonfootmark");//我的足迹
+	Route::any('/homesettingaddress',"Index\HomeSettingAddress@homesettingaddress");//设置地址
+	Route::post('/index/getArea',"Index\HomeSettingAddress@getArea");//三级联动
+	Route::post('/saveaddress',"Index\HomeSettingAddress@saveaddress");//添加地址
+	Route::post('/setDefault',"Index\HomeSettingAddress@setDefault");//设置默认
+	Route::any('/home/exit/{id}','Index\HomeSettingAddress@exit');//修改地址
+	Route::any('/exitaddress','Index\HomeSettingAddress@exitaddress');//修改地址
+	Route::any('/home/del',"Index\HomeSettingAddress@del");//删除地址
+    Route::get('/homesettingaddresscomplete',"Index\HomeSettingAddress@homesettingaddresscomplete");//绑定手机号
+	Route::get('/homesettingaddressphone',"Index\HomeSettingAddress@homesettingaddressphone");//验证身份
+
+    Route::any('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe");//安全管理
+	Route::any('/sends/verification/code',"Index\HomeSettingAddress@sends_verification_code");//密码设置短信发送验证码
+
+    Route::get('/homesettinginfo',"Index\HomeSettingAddress@homesettinginfo");//个人信息
+	Route::post('/saveinfo',"Index\HomeSettingAddress@saveinfo");//个人信息添加
+	Route::get('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe");//密码设置
+    Route::get('/item/{id}',"Index\ItemController@item");//商品详情
+    Route::post('/savecar/{id?}/{sum?}/{zongjia?}',"Index\CartController@savecar");//商品详情处理
+	Route::get('/login',"Index\LoginController@login");//登陆
+	Route::any('/logindo',"Index\LoginController@logindo");//登陆
+	Route::any('/qiut',"Index\LoginController@qiut");//退出登录
+    Route::get('/pay',"Index\PayController@pay");//支付
+    Route::get('/payfail',"Index\PayController@payfail");//支付失败
+	Route::get('/paysuccess',"Index\PayController@paysuccess");//支付成功
+    Route::any('/register/{zhi?}',"Index\LoginController@register");//注册
+	Route::any('/zhuce',"Index\LoginController@zhuce");//注册
+    Route::any('/yanzheng/{user_tel?}/{user_code?}',"Index\LoginController@yanzheng");//注册
+    Route::any('/shoji',"Index\LoginController@shoji");//手机号唯一验证
+    Route::any('/registers/taoqiande/{zhi?}',"Index\LoginController@taoqiande");//验证码
+	Route::get('/sampling',"Index\CooperationController@sampling");//商家合作
+    Route::get('/search/{id}',"Index\SearchController@search");//商品列表页
+    Route::get('/seckillindex',"Index\SeckillIndexController@seckillindex");//秒杀
+	Route::get('/seckillitem',"Index\SeckillItemController@seckillitem");//详情
+	Route::get('/shop',"Index\ShopController@shop");//我的店铺
+	Route::get('/successcart',"Index\CartController@successcart");//成功加入购物车
+	Route::get('/index/search/',"Index\SearchController@brand");//商品搜索
+	Route::post('/index/list',"Index\SearchController@indexlist");//商品列表
+	Route::get('/index/price','Index\SearchController@price');//价格重新获取
+	Route::get('/cookie',"Index\CookieController@cookie");//Cookie测试
+});
+        //后台登陆
+        Route::get('/admin/login','Admin\LoginController@login');//后台登陆
+        Route::post('/admin/logindo','Admin\LoginController@logindo');//登陆动作
+        #######################################################################
+        //商家管理后台
+        Route::prefix('admin')->middleware('admin')->group(function(){
+	    ########################################################################
+	    Route::get('/shouye','Admin\IndexController@index');//商家后台首页
+	    #########################################################################
+	    Route::any('/goodsedit','Admin\GoodsController@goodsedit');//新增商品
+	    Route::get('/goods','Admin\GoodsController@goods');//商品管理
+		Route::post('/delete','Admin\GoodsController@delete');//删除商品
+		Route::get('/update/{goods_id}','Admin\GoodsController@update');//修改商品
+		Route::post('/updated','Admin\GoodsController@updated');//修改商品
+		Route::post('/goods/check','Admin\GoodsController@check');//商品即点即改
+		Route::post('/goods/check2','Admin\GoodsController@check2');//商品点即是否显示
+	    #########################################################################
+	    Route::any('/brand','Admin\BrandController@brand');//品牌添加
+		Route::get('/index','Admin\BrandController@index');//品牌展示
+		Route::any('/brand/del','Admin\BrandController@del');//品牌删除
+		Route::any('/brand/exit/{id}','Admin\BrandController@exit');//品牌修改
+		Route::any('/brand/exitadd','Admin\BrandController@exitadd');//品牌修改
+		Route::any('/brand/check','Admin\BrandController@check');//品牌即点即改
+		Route::any('/brand/pishan/{id?}','Admin\BrandController@pishan');//品牌即点即改
+		##########################################################################
+	    Route::any('/categoryedit','Admin\CategoryController@categoryedit');//新增分类
+	    Route::any('/category','Admin\CategoryController@category');//分类展示
+	    Route::any('/categorydel/{id?}','Admin\CategoryController@categorydel');//分类删除
+	    Route::any('/categoryudes','Admin\CategoryController@categoryudes');//分类判断是否用商品
+		Route::any('/categoryupdate/{id}','Admin\CategoryController@categoryupdate');//分类修改
+		Route::any('/category/check','Admin\CategoryController@check');//分类是否显示
+		Route::any('/category/check2','Admin\CategoryController@check2');//分类即点即改
+	    Route::any('/categoryudes','Admin\CategoryController@categoryudes');//分类判断是否拥有商品
+	    Route::any('/categoryupdate/{id}','Admin\CategoryController@categoryupdate');//分类修改
+        #########################################################################
+	    Route::any("/shufflingsave","Admin\ShufflingController@shufflingsave");//轮播图添加
+	    Route::any("/shuinsert","Admin\ShufflingController@shuinsert");//轮播图添加动作
+	    Route::any("/shufflingshow","Admin\ShufflingController@shufflingshow");//轮播图展示
+	    Route::any("/shufflingdel/{id}","Admin\ShufflingController@shufflingdel");//轮播图删除
+	    Route::any("/shufflingupdate/{id}","Admin\ShufflingController@shufflingupdate");//轮播图修改
+	   #########################################################################
+	    Route::any('ad/add','Admin\AdController@add');//广告添加
+	   	Route::any('ad/index','Admin\AdController@index');//广告展示
+	   	Route::any('ad/shan','Admin\AdController@shan');//广告删除
+	    Route::any('ad/xiu/{id?}/{data?}','Admin\AdController@xiu');//广告修改
+		//RBAC
+		#############################################################################
+		Route::any('/create','Admin\AdminController@create');//管理员
+	    Route::any('/adminadd','Admin\AdminController@adminadd');//管理员添加
+     	Route::any('/admin/index','Admin\AdminController@index');//管理员展示
+	    Route::any('/admin/del','Admin\AdminController@del');//管理员删除
+	    Route::any('/admin/exit/{id}','Admin\AdminController@exit');//管理员修改展示
+	    Route::any('/admin/exitad','Admin\AdminController@exitad');//管理员修改
+	    Route::any('/alldel','Admin\AdminController@alldel');//管理员批删
+	    Route::any('/admin/roles/{id}','Admin\AdminController@roles');//角色添加
+		#########################################################################
+		Route::any('/rolecreate','Admin\RoleController@rolecreate');//角色添加
+     	Route::any('/role','Admin\RoleController@role');//角色展示
+	    Route::any('/roledelete','Admin\RoleController@roledelete');//角色删除
+		Route::any('/roleupdate/{id}','Admin\RoleController@roleupdate');//角色修改
+	    Route::get('/role/alldel','Admin\RoleController@alldel');//批量删除
+	    Route::any('/admin/rights/{id}','Admin\RoleController@rights');//权限添加
+	    Route::any('/admin/rightsdel/{id}','Admin\RoleController@rightsdel');//权限删除
+	   ###########################################################################
+	    Route::any('/rightedit','Admin\RightController@rightedit');//新增权限
+	    Route::any('/right','Admin\RightController@right');//权限展示
+	    Route::any('/rightdel','Admin\RightController@rightdel');//权限删除
+	    Route::any('/rightexit/{id}','Admin\RightController@rightexit');//权限编辑
+	    Route::any('/rightupdate','Admin\RightController@rightupdate');//权限修改
+	    Route::get('/right/alldel','Admin\RightController@alldel');//批量删除
+	    #######################################################################
+	    ##############################################SKU###############################################
+	    Route::any("/addition","Admin\SkuPropController@addition");//SKU属性名添加
+	    Route::any("/display","Admin\SkuPropController@display");//SKU属性名展示
+	    Route::any("/deletion/{id}","Admin\SkuPropController@deletion");//SKU属性名删除
+	    Route::any("/attrupdate/{id}","Admin\SkuPropController@update");//SKU属性名修改
+	   ###########################################SKU属性值加属性名######################################################
+		Route::any('/attrvaledit','Admin\AttrvalController@attrvaledit');//新增属性值
+		Route::any('/attrval','Admin\AttrvalController@attrval');//属性值展示
+		Route::any('/attrvaldel','Admin\AttrvalController@attrvaldel');//属性值删除
+		Route::any('/attrvalexit/{id}','Admin\AttrvalController@attrvalexit');//属性值编辑
+		Route::any('/attrvalupdate','Admin\AttrvalController@attrvalupdate');//属性值修改
+		###########################################SKU属性值加属性名######################################################
+	    Route::any("/AssocSave","Admin\SkuPropAssController@AssocSave");//SKU添加
+	    Route::any("/stock/createDo","Admin\SkuPropAssController@AssoccreateDo");//SKU处理请求
+	    Route::any("/AssocShow","Admin\SkuPropAssController@AssocShow");//SKU展示
+	    Route::any("/AssocDelete/{id}","Admin\SkuPropAssController@AssocDelete");//SKU删除
+	    Route::any("/AssocUpdate/{id}","Admin\SkuPropAssController@AssocUpdate");//SKU修改
+	    ####################################################################################################
+});
