@@ -28,9 +28,15 @@ class GetOrderInfoController extends Controller
 		//用户id
 		$user_id =session("users")['user_id'];
 		//默认地址表
-		$rderdata= $this->Default_address($user_id);
+		$rderdata = $this->Default_address($user_id);
+		if($rderdata == "1"){
+			return redirect("/shop/homesettingaddress");
+		};
 		//添加确认订单的商品
 		$goods_name = $this->Goods_database($id,$user_id);
+		if($goods_name =="2"){
+			return redirect("/shop/homeindex");
+		}
 		$unit_price = $this->Goods_unit_price($goods_name);
 		return view('Merchandise.Index.getorderinfo',compact('dingji','name','rderdata','goods_name',"unit_price"));
 	}
@@ -42,9 +48,9 @@ class GetOrderInfoController extends Controller
 				"is_default"=>'2',
 		];
 		if(AddressModel::where($where)->get() == null){
-			dd("请联系管理员，QQ");
+			return "1";
 		}
-	//地址数据
+		//地址数据
 	   $rderdata = AddressModel::where($where)->get()->toArray();
 	   foreach($rderdata as $k=>$a){
 		   	$rderdata[$k]["province"] = AreaModel::where("id",$a["province"])->first("name")->name;
@@ -64,7 +70,7 @@ class GetOrderInfoController extends Controller
 					"shop_cary.user_id"=>$user_id,
 			];
 			if(CarModel::where($where)->leftjoin("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")->first() == null){
-				dd("请联系管理员，QQ:2382662404");
+				return "2";
 			}
 			$cary_name[] = CarModel::where($where)->leftjoin("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")->first()->toArray();
 		}
@@ -153,9 +159,9 @@ class GetOrderInfoController extends Controller
 		if($Order_Address !== true || $Order_Goods !== true || $Order_Info !== true){
 			return false;
 		}
-		foreach($goods_id as $k=>$a){
-			$Car_del = CarModel::where(["goods_id"=>$a,"is_del"=>"1","user_id"=>$user_id])->update(["is_del"=>"0"]);
-		}
+		// foreach($goods_id as $k=>$a){
+		// 	$Car_del = CarModel::where(["goods_id"=>$a,"is_del"=>"1","user_id"=>$user_id])->update(["is_del"=>"0"]);
+		// }
 
 		return "true";
 	}
