@@ -320,8 +320,7 @@ $(function(){
 			data:{goods_id:goods_id,cary_id:cary_id,payname:payname,total_price:total_price},
 			async:true,
 			success:function(index){
-				console.log(index);
-					// location.href=("/shop/pay");
+				location.href=("/shop/pay");
 			}
 		});	
 	});
