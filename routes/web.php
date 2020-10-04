@@ -44,10 +44,8 @@ Route::prefix('shop')->group(function(){
 	Route::any('/home/del',"Index\HomeSettingAddress@del");//删除地址
     Route::get('/homesettingaddresscomplete',"Index\HomeSettingAddress@homesettingaddresscomplete");//绑定手机号
 	Route::get('/homesettingaddressphone',"Index\HomeSettingAddress@homesettingaddressphone");//验证身份
-
     Route::any('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe");//安全管理
 	Route::any('/sends/verification/code',"Index\HomeSettingAddress@sends_verification_code");//密码设置短信发送验证码
-
     Route::get('/homesettinginfo',"Index\HomeSettingAddress@homesettinginfo");//个人信息
 	Route::post('/saveinfo',"Index\HomeSettingAddress@saveinfo");//个人信息添加
 	Route::get('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe");//密码设置
