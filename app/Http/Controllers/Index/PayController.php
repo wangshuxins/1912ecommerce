@@ -5,20 +5,22 @@ namespace App\Http\Controllers\Index;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Model\Order_InfoModel;
 class PayController extends Controller
 {
-    public function pay(request $request){
-	
-	   $order_id = $request->get("order_id");
+    public function pay($id){
 
-	   $mouse = 132;
 
+	   $mouse = Order_InfoModel::where('order_id',$id)->first()->toArray();
+
+        $total_amount = $mouse['order_amount'];
+        $out_trade_no = $mouse['order_sn'];
         //1请求参数
         $param2 = [
-            'out_trade_no' => time().mt_rand(11111,99999),
+            'out_trade_no' => $out_trade_no,
             'product_code' =>'FAST_INSTANT_TRADE_PAY',
-            'total_amount' => $mouse,
-            'subject' => '1911-测试订单-'.Str::random(16),
+            'total_amount' => $total_amount,
+            'subject' => '品优购支付',
         ];
         //2 公共参数
         $param1 = [

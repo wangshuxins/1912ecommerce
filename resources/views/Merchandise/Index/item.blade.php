@@ -673,8 +673,10 @@ $(function(){
 						location.href="/shop/cart";
 					}else if(res==2){
 					
-					  alert('库存不足，或者购物车已买此商品的最大库存量')
+					  alert('库存不足，或者购物车已买此商品的最大库存量');return;
 					
+					}else if(res==3){
+						alert('库存不足，或者购物车已买此商品的最大库存量');return;
 					}
 				}
 			})

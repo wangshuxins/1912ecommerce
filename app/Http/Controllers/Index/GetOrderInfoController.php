@@ -105,11 +105,12 @@ class GetOrderInfoController extends Controller
 			$total_price = request()->post("total_price");
 			//#############################以下都是进库操作##########################################
 			//订单方法
-			$Order_Goods = $this->Goods_namedesc($user_id,$cary_id,$payname,$total_price,$goods_id);
-			if($Order_Goods == true){
-				return "成功";
+			$Order_Goods = $this->Goods_namedesc($user_id,$cary_id,$payname,$total_price,$goods_id)->toArray();
+			$order_id = $Order_Goods['order_id'];
+			if($Order_Goods == false){
+				error('失败');
 			}else{
-				return "失败";
+				echo json_encode(['error_no'=>0,'error_msg'=>'成功','data'=>$order_id]);
 			}
 		}
 	}
@@ -133,6 +134,7 @@ class GetOrderInfoController extends Controller
 		// 订单商品处理信息
 		$order_id = Order_InfoModel::where(["order_sn"=>$order_number,"user_id"=>$user_id])->first("order_id");
 		foreach($goods_id as $k=>$a){
+
 			$cary_name = CarModel::where(["goods_id"=>$a,"is_del"=>"1","user_id"=>$user_id])->first();
 			$Order_GoodsModel = new Order_GoodsModel;
 			$Order_GoodsModel->user_id     = $user_id;
@@ -163,7 +165,7 @@ class GetOrderInfoController extends Controller
 		// 	$Car_del = CarModel::where(["goods_id"=>$a,"is_del"=>"1","user_id"=>$user_id])->update(["is_del"=>"0"]);
 		// }
 
-		return "true";
+		return $order_id;
 	}
 
 

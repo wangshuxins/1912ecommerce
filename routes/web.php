@@ -54,7 +54,7 @@ Route::prefix('shop')->group(function(){
 	Route::get('/login',"Index\LoginController@login");//登陆
 	Route::any('/logindo',"Index\LoginController@logindo");//登陆
 	Route::any('/qiut',"Index\LoginController@qiut");//退出登录
-    Route::get('/pay',"Index\PayController@pay");//支付
+    Route::get('/pay/{id}',"Index\PayController@pay");//支付
     Route::get('/payfail',"Index\PayController@payfail");//支付失败
 	Route::get('/paysuccess',"Index\PayController@paysuccess");//支付成功
     Route::any('/register/{zhi?}',"Index\LoginController@register");//注册

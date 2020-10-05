@@ -32,6 +32,7 @@ class CartController extends Commons
 				];
 				$res = CarModel::insert($data);
 			} else {
+
 				$data = [
 						"user_id" => $user_id,//用户ID
 						"goods_id" => $goods_id,//商品ID
@@ -40,6 +41,18 @@ class CartController extends Commons
 						"add_time" => time(),//时间
 						"is_del" => 1
 				];
+				$sums = GoodsModel::select("goods_store")->where("goods_id", $goods_id)->first()->toArray();
+				$goods_sum = ($sums['goods_store']);
+				$sumx = CarModel::select("buy_number")->where("goods_id", $goods_id)->where("goods_id", $goods_id)->first()->toArray();
+				$buy_numberx = ($sumx['buy_number']);
+
+				$goods_count = $goods_num+$buy_numberx;
+
+				if($goods_count>$goods_sum){
+
+					return 3;
+				}
+
 				$res = CarModel::where("cary_id", $tiaojian->cary_id)->update($data);
 			}
 			if ($res) {
@@ -141,8 +154,10 @@ class CartController extends Commons
 				['goods_id','=',$goods_id],
 				['is_del','=',1]
 		];
-
-		$res = CarModel::where($where)->update(['buy_number'=>$buy_number]);
+        $goods_price = GoodsModel::select('goods_price')->where('goods_id',$goods_id)->first()->toArray();
+		$goods_price = $goods_price['goods_price'];
+		$goods_totall = $buy_number*$goods_price;
+		$res = CarModel::where($where)->update(['buy_number'=>$buy_number,'goods_totall'=>$goods_totall]);
 		if($res!==false){
 			success("修改成功");
 		}else{

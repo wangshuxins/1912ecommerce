@@ -274,65 +274,62 @@
 </body>
 </html>
 <script>
-$(function(){
-		//收货地址
-		// $(".name").click(function(){
-		// 	var data = $(this).attr("attr_id");
-		// 	var url="/shop/orderaddress";
-		// 	$.ajax({
-		// 		url:url,
-		// 		type:'post',
-		// 		data:{data:data},
-		// 		async:true,
-		// 		success:function(index){
-		// 			console.log(index);
-		// 			$(".fc-receiverInfo").html("寄送至:北京市海淀区三环内 中关村软件园9号楼 收货人：某某某 159****3201");
-		// 		}
-		// 	});
-		// });{{url('/shop/pay')}}
+$(function() {
+	//收货地址
+	// $(".name").click(function(){
+	// 	var data = $(this).attr("attr_id");
+	// 	var url="/shop/orderaddress";
+	// 	$.ajax({
+	// 		url:url,
+	// 		type:'post',
+	// 		data:{data:data},
+	// 		async:true,
+	// 		success:function(index){
+	// 			console.log(index);
+	// 			$(".fc-receiverInfo").html("寄送至:北京市海淀区三环内 中关村软件园9号楼 收货人：某某某 159****3201");
+	// 		}
+	// 	});
+	{{--// });{{url('/shop/pay')}}--}}
 	$(".btn-xlarge").click(function(){
-		var cary_id = $(".name.selected").attr("attr_id");
-		if(cary_id == undefined){
-			alert("请选择收货地址");
-			return false;
-		}
-		var payname = $("#payname.selected").attr("payname");  
-		if(payname == undefined){
-			alert("请选择支付方式");
-			return false;
-		}
-		var total_price = $("#total_price").attr("total_pr");
-		if(total_price == undefined){
-			alert("页面错误");
-			return false;
-		}
-		var goods_id = [];
-        $('.desc').each(function(){
-            goods_id.push($(this).attr("goods_id"));
-        });
-        if(goods_id==''){
-            return;
-        }
-        var url = "/shop/orderaddress";
-		$.ajax({
-			url:url,
-			type:'post',
-			data:{goods_id:goods_id,cary_id:cary_id,payname:payname,total_price:total_price},
-			async:true,
-			success:function(index){
-				if(index == "成功"){
-					alert(index);
-					location.href=("/shop/pay");
-				}else{
-					alert(index);
-				}
-
-			}
-		});	
+	var cary_id = $(".name.selected").attr("attr_id");
+	if (cary_id == undefined) {
+		alert("请选择收货地址");
+		return false;
+	}
+	var payname = $("#payname.selected").attr("payname");
+	if (payname == undefined) {
+		alert("请选择支付方式");
+		return false;
+	}
+	var total_price = $("#total_price").attr("total_pr");
+	if (total_price == undefined) {
+		alert("页面错误");
+		return false;
+	}
+	var goods_id = [];
+	$('.desc').each(function () {
+		goods_id.push($(this).attr("goods_id"));
 	});
+	if (goods_id == '') {
+		return;
+	}
+	var url = "/shop/orderaddress";
+	$.ajax({
+		url: url,
+		type: 'post',
+		data: {goods_id: goods_id, cary_id: cary_id, payname: payname, total_price: total_price},
+		async: true,
+		dataType:'json',
+		success: function (index) {
+			if (index.error_no==0) {
+				alert('成功');
+				location.href = "/shop/pay/"+index.data;
+			} else {
+				alert(index);
+			}
 
-
-
-
+		}
+	});
+});
 });
 </script>
