@@ -52,8 +52,8 @@ class SkuPropAssController extends Controller
                     $msg = [
                         'goods_id'=>$goods_id,
                         'sku'=>$v[2],
-                        'goods_store'=>$v[1],
-                        'goods_price'=>$v[0],
+                        'goods_store'=>$v[0],
+                        'goods_price'=>$v[1],
                         'add_time'=>time()
                     ];
                     $str = AttrSkuModel::insert($msg);
@@ -78,11 +78,13 @@ class SkuPropAssController extends Controller
     }
     //处理用户添加数据
     public function AssoccreateDo(){
-        //接值
-        $name = request()->post();
+        //接商品值
+        $goods_id = request()->post("goods_id");
+        //接sku值
+        $name = request()->post("ability");
         //查询商品的名称
-        $goods_name = GoodsModel::where("goods_id",$name["goods_id"])->first("goods_name");
-        $MDKsub = $this->AssocButeSku($name);
+        $goods_name = GoodsModel::where("goods_id",$goods_id)->first("goods_name");
+        $MDKsub = $this->AssocButeSku(array_filter($name));//实例 用回调函数过滤数组中的元素
         ajax($goods_name,$MDKsub);
     }
     //处理方法
@@ -91,7 +93,7 @@ class SkuPropAssController extends Controller
         $sku = array_shift($arr);
         while($arr2 = array_shift($arr)){
             $arr1 = $sku;
-            $sku  = array();
+            $sku  = [];
             foreach($arr1 as $k=>$v){
                 foreach($arr2 as $k2=>$v2){
                     $sku[] = $v.','.$v2;
@@ -127,7 +129,10 @@ class SkuPropAssController extends Controller
         // $data = AttrModel::leftjoin('shop_goods','shop_goods.goods_id','=','shop_goods_attrval.goods_id')->where('shop_goods_attrval.is_del',1)->paginate(7);
         $data = AttrSkuModel::leftjoin("shop_goods","shop_goods.goods_id","=","shop_attr_attrval_sku.goods_id")
                             ->where("shop_attr_attrval_sku.is_del","1")
+                            ->select("shop_goods.goods_name","shop_attr_attrval_sku.id","shop_attr_attrval_sku.goods_price",
+                                     "shop_attr_attrval_sku.goods_store","shop_attr_attrval_sku.sku","shop_attr_attrval_sku.add_time")
                             ->get()->toArray();
+        // dd($data);
         $form = [];
         foreach($data as $k=>$a){
             $str = "";
@@ -146,7 +151,7 @@ class SkuPropAssController extends Controller
                 $sxz = ltrim($sxz,',');
                 // dd($sxz);
                 $where2 = [
-                    ['attr_id','=',$sxz],
+                    ['id','=',$sxz],
                     ['is_del','=',1]
                 ];
                 $sxz = AttrvalModel::where($where2)->value('attrval_name');
@@ -179,7 +184,7 @@ class SkuPropAssController extends Controller
     //处理添加
     private function AssocButeSku($name){
         $arr = [];
-        foreach(array_filter($name["ability"]) as $k=>$v){
+        foreach($name as $k=>$v){
             //去除右边的逗号转成字符串
             $dat = rtrim($v,',');
             //将字符串分割成数组
@@ -187,17 +192,19 @@ class SkuPropAssController extends Controller
             //将下标作为数组的下标进行赋值
             $arr[$k] = $form;
         }
-        $data = [];
+        $user_data = [];
         foreach($arr as $key=>$value){
             $tmp=[];
             foreach($value as $k1 => $v1){
                 $str = "$key:$v1";
-                array_push($tmp,$str);
+                $tmp[] = $str;
+                // array_push($tmp,$str);
             }
-            array_push($data,$tmp);
+            $user_data[] = $tmp;
+            // array_push($data,$tmp);
         }
         $name_desc = [];
-        foreach($this->loop($data) as $k=>$a){
+        foreach($this->loop($user_data) as $k=>$a){
             $dat = explode(",",$a);
             $arr1 = [];
             $str = "";
@@ -209,12 +216,12 @@ class SkuPropAssController extends Controller
                 //获取属性id
                 $id .= $sx.",".$sxzs.":";
                 $arr1['id'] = $id;
-                 // dd($sx);
                 //获取值_id
                 //获取属性
                 $data = AttrModel::where('id', $sx)->value('attr_name');
+                // dump($data);
                 //获取值
-                $dat = AttrvalModel::where('attr_id', $sxzs)->value('attrval_name');
+                $dat = AttrvalModel::where('id', $sxzs)->value('attrval_name');
                 //属性和属性值拼接
                 $str .= $data.'-'.$dat.":";
                 $str = rtrim($str,":");
