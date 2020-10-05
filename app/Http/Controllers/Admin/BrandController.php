@@ -186,11 +186,11 @@ class BrandController extends Controller
 	//即点即改
 	public function check(Request $request){
 		$_value=$request->input('_value');
+		
 		$_field=$request->input('_field');
 		//dd($_field);
 		$_brand_id=$request->input('_brand_id');
-		//dd($_goods_id);
-
+		
 	   //$obj=new Shop;
 	   //$res=$obj->where("_brand_id=$_brand_id")->update([$_field=>$_value]);
 	   $where=[
@@ -200,7 +200,7 @@ class BrandController extends Controller
 	   //$res=DB::table('shop')->where($where)->update([$_field=>$_value]);
 	   $res=BrandModel::where($where)->update([$_field=>$_value]);
 	   //07dd($res);
-	   if($res){
+	   if($res!==false){
 		   echo "ok";
 	   }else{
 		   echo "no";

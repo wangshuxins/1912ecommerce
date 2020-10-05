@@ -1,8 +1,12 @@
 <?php
 
 namespace App\Http\Middleware;
+use App\Model\AdminModel;
 use Closure;
 use Illuminate\Support\Facades\DB;
+use App\Model\UserRoleModel;
+use App\Model\RoleRightModel;
+use App\Model\RightModel;
 class RbacMiddleWare
 {
     /**
@@ -14,6 +18,9 @@ class RbacMiddleWare
      */
     public function handle($request, Closure $next)
     {
+
+
+
         $login = session('login');
         if(!$login){
             $cookie_login = Request()->cookie('login');
@@ -26,44 +33,44 @@ class RbacMiddleWare
                 return redirect('/admin/login');
             }
         }
-       $user = DB::table('shop_admin_user')->where('user_id',$login->user_id)->first();
-        if(!empty($user)){
-            if($user->user_name=='王树鑫'){
+        $user_id = session('login')->user_id;
+
+        $user1=AdminModel::where(['is_del'=>1,'user_id'=>$user_id])->first();
+
+        $user2=UserRoleModel::orderBy('id','desc')->where('user_id',$user_id)->first();
+        if(empty($user1)) {
+            echo "<script>alert('你没有权限访问~请联系管理员添加权限');history.back(-1);</script>";
+            exit;
+        }
+        if($user1->user_name== '王树鑫'){
+            return $next($request);
+        }
+        if(empty($user2)){
+            echo "<script>alert('你没有权限访问~请联系管理员添加权限');history.back(-1);</script>";
+            exit;
+        }
+        $user2_arr=explode(',',trim($user2->role_id,','));
+        $role_arr=RoleRightModel::whereIn('role_id',$user2_arr)->get()->toArray();
+        if(empty($role_arr)){
+            echo "<script>alert('你没有权限访问~请联系管理员添加权限');history.back(-1);</script>";
+            exit;
+        }
+        $url='/'.$request->path();
+        $url = preg_replace("/\\d+/",'', $url);
+        foreach ($role_arr as $k=>$v) {
+            $right_id=explode(',',trim($v['right_id'],','));
+            asort($right_id);
+            $arr=RightModel::whereIN('right_id',$right_id)->get('right_url')->toArray();
+              foreach($arr as $v1){
+                  $url2[]=$v1['right_url'];
+              }
+            if(in_array($url,$url2)){
                 return $next($request);
             }else{
-                $url=$request->path();
-
-                $user_role=DB::table('admin_role_rbac')->where('user_id',$login->user_id)->first();
-                if($user_role==null){
-                    echo "<script>alert('你没有权限访问~请联系超级管理员添加权限')</script>";
-                    exit;
-                }else{
-                    $role_id=trim($user_role->role_id,',');
-                    $user_role->role_id=explode(',',$role_id);
-                    $arr_poter=[];
-                    foreach ($user_role->role_id as $v) {
-                        $role_poter=DB::table('role_right_rbac')->where('role_id','=',$v)->get();
-                        $arr_poter[]=$role_poter;
-                    }
-                    foreach ($arr_poter as &$vv){
-                        $right_id=trim($vv[0]->right_id,',');
-                        $arr_poter2[]=array_unique(explode(',',$right_id));
-                    }
-                    $right2=[];
-                    foreach ($arr_poter2 as $vv2){
-                        foreach ($vv2 as $vv3) {
-                            $right=DB::table('shop_right_rbac')->where('right_id','=',$vv3)->get();
-                            $right2[]=$right[0]->right_url;
-                        }
-                    }
-                    if(in_array('/'.$url,$right2)){
-                        return $next($request);
-                    }else{
-                        return redirect(url()->previous())->with('info','你没有此权限!');
-                        exit;
-                    }
-                }
+                echo "<script>alert('你没有权限访问~请联系管理员添加权限');history.go(-1);</script>";
+                exit;
             }
+
         }
     }
 }

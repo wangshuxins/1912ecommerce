@@ -47,7 +47,8 @@ class SearchController extends Controller
 				$str.="<a class='pag' href='javascript:void(0)'>".$i."</a>";
 			}
 		}
-		return view('Merchandise.Index.search',compact('dingji','brand','priceInfo','limit','str'));
+
+		return view('Merchandise.Index.search',compact('dingji','brand','priceInfo','limit','str','id'));
 	}
 	public function getPriceSection($max_price){
 
@@ -94,10 +95,9 @@ class SearchController extends Controller
 
 		$p =  Request()->input('p');
 
-		if($p==1){
+		if($p){
 			$p = ($p-1);
 		}
-
 		$where = [];
 
 		if(!empty($brand_id)){
@@ -122,7 +122,7 @@ class SearchController extends Controller
 			 $limit = GoodsModel::where($where)->whereIn('cate_id',$cate_ids)->whereBetween('goods_price',[$str_replace[0],$str_replace[1]])->offset($p)->limit($page_num)->get();
 			 $count = GoodsModel::where($where)->whereIn('cate_id',$cate_ids)->whereBetween('goods_price',[$str_replace[0],$str_replace[1]])->count();
 		 }else{
-			 $limit = GoodsModel::where($where)->whereIn('cate_id',$cate_ids)->offset($p)->limit($page_num)->get();
+			 $limit = GoodsModel::where($where)->whereIn('cate_id',$cate_ids)->offset($p*10)->limit(10)->get();
 			 $count = GoodsModel::where($where)->whereIn('cate_id',$cate_ids)->count();
 		 }
 		$page_count = ceil($count/$page_num);

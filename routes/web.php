@@ -44,10 +44,8 @@ Route::prefix('shop')->group(function(){
 	Route::any('/home/del',"Index\HomeSettingAddress@del");//删除地址
     Route::get('/homesettingaddresscomplete',"Index\HomeSettingAddress@homesettingaddresscomplete");//绑定手机号
 	Route::get('/homesettingaddressphone',"Index\HomeSettingAddress@homesettingaddressphone");//验证身份
-
     Route::any('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe");//安全管理
 	Route::any('/sends/verification/code',"Index\HomeSettingAddress@sends_verification_code");//密码设置短信发送验证码
-
     Route::get('/homesettinginfo',"Index\HomeSettingAddress@homesettinginfo");//个人信息
 	Route::post('/saveinfo',"Index\HomeSettingAddress@saveinfo");//个人信息添加
 	Route::get('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe");//密码设置
@@ -98,7 +96,7 @@ Route::prefix('shop')->group(function(){
 		Route::any('/brand/exit/{id}','Admin\BrandController@exit');//品牌修改
 		Route::any('/brand/exitadd','Admin\BrandController@exitadd');//品牌修改
 		Route::any('/brand/check','Admin\BrandController@check');//品牌即点即改
-		Route::any('/brand/pishan/{id?}','Admin\BrandController@pishan');//品牌即点即改
+		Route::any('/brand/pishan/{id?}','Admin\BrandController@pishan');//品牌批量删除
 		##########################################################################
 	    Route::any('/categoryedit','Admin\CategoryController@categoryedit');//新增分类
 	    Route::any('/category','Admin\CategoryController@category');//分类展示

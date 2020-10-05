@@ -59,7 +59,7 @@ class CartController extends Commons
 
 					if(empty($result)){
 
-						error('购买数量超过库存');
+						return 2;
 
 					}
 					$cartInfo[$goods_id]['buy_number']=$cartInfo[$goods_id]['buy_number']+$goods_num;
@@ -68,7 +68,7 @@ class CartController extends Commons
 					$result = $this->checkGoodsNum($goods_num,$goods_id);
 
 					if(empty($result)){
-						error('购买数量超过库存');
+						return 2;
 					}
 
 					$cartInfo[$goods_id] = ['goods_id'=>$goods_id,'buy_number'=>$goods_num,'add_time'=>time()];
@@ -81,7 +81,7 @@ class CartController extends Commons
 
 				if(empty($result)){
 
-					error('购买数量超过库存');
+					return 2;
 
 				}
 				$cartInfo = [
@@ -103,6 +103,12 @@ class CartController extends Commons
 		}else{
 
 			$car = $this->buyListCookie();
+
+		}
+		if(empty($car)){
+		
+		$car = [];
+		
 		}
 		return view("Merchandise.Index.cart",compact('car'));
 

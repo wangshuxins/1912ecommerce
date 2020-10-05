@@ -198,11 +198,7 @@ class LoginController extends Commons
 
                     $v['user_id'] = $user_id;
                     DB::table('shop_cary')->insert($v);
-                    if(empty($res)){
-
-                        error('同步失败');
-
-                    }
+                   
 
                 }else{
 
@@ -259,13 +255,6 @@ class LoginController extends Commons
 			return 1;
 		}
 	}
-
-
-
-
-
-
-
 
 	public function sendsms($tel,$code){
 		AlibabaCloud::accessKeyClient('LTAI4FenUj7vMeELL41wDJXB', 'PpifIuqu5F8ui6Orv8y7AMwOnF0sPU')

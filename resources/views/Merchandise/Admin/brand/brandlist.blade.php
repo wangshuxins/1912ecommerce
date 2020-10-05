@@ -47,7 +47,7 @@
 		</thead>
 		<tbody>
 		@foreach($brand as $k=>$v)
-			<tr id="{{$v->brand_id}}">
+			<tr brand_id="{{$v->brand_id}}">
 				<td><input  class="box" type="checkbox"></td>
 				<td>{{$v->brand_id}}</td>
 				<td field="brand_name">
@@ -159,11 +159,11 @@
 				var _field=_this.parent().attr("field");
 				//获取goods_id
 				var _brand_id=_this.parents('tr').attr("brand_id");
-				//console.log(_brand_id);
+				
 				//ajax 验证
 				$.post(
 					"{{url('admin/brand/check')}}",
-					{'_token':"{{ csrf_token() }}",_value:_value,_field:_field,_brand_id:_brand_id},
+					{_value:_value,_field:_field,_brand_id:_brand_id},
 					function(res){
 						console.log(res);
 						if(res=='ok'){
