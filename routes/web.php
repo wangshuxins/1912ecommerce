@@ -96,7 +96,7 @@ Route::prefix('shop')->group(function(){
 		Route::any('/brand/exit/{id}','Admin\BrandController@exit');//品牌修改
 		Route::any('/brand/exitadd','Admin\BrandController@exitadd');//品牌修改
 		Route::any('/brand/check','Admin\BrandController@check');//品牌即点即改
-		Route::any('/brand/pishan/{id?}','Admin\BrandController@pishan');//品牌即点即改
+		Route::any('/brand/pishan/{id?}','Admin\BrandController@pishan');//品牌批量删除
 		##########################################################################
 	    Route::any('/categoryedit','Admin\CategoryController@categoryedit');//新增分类
 	    Route::any('/category','Admin\CategoryController@category');//分类展示

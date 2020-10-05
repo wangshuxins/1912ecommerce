@@ -24,7 +24,7 @@
 				</li>
 				<li class="active">智能手机</li>
 			</ul>
-			<ul class="tags-choose">
+			<ul class="tags-choose" id="cate_id">
 				<li class="tag" id="brand_name" style="display:none">品牌<i class="sui-icon icon-tb-close">
 					</i>
 				</li>
@@ -121,6 +121,7 @@
 								</div>
 							</li>
 						@endforeach
+						
 					</ul>
 				</div>
 				<div class="fr page">
@@ -394,6 +395,8 @@
 <script type="text/javascript" src="/index/static/js/plugins/sui/sui.min.js"></script>
 <script type="text/javascript" src="/index/static/js/widget/cartPanelView.js"></script>
 </body>
+
+</html>
 <script>
 	$(function(){
 		//点击事件--点击品牌
@@ -409,7 +412,7 @@
 
 			$("#brand_name").show();
 
-			$("#brand_name").html(brand_name+"<a id='delbrand_id' brand_id="+brand_id+">×</a>");
+			$("#brand_name").html(brand_name+"<a id='delbrand_id' cate_id='{{$id}}' brand_id="+brand_id+">×</a>");
 
 			//重新获取此品牌的商品列表
 			$.ajax({
@@ -476,11 +479,32 @@
 		}
 		//删除品牌条件
 		$(document).on('click',"#delbrand_id",function(){
+			var goods_price = $(".li.nowprice>a").text();
+			if(goods_price){
+
+				alert('请先删除价格条件');return;
+
+			}
+			var _this = $(this);
+			_this.parent().hide();
+			var cate_id =_this.attr("cate_id");
+			$.ajax({
+				url:"/shop/search/"+cate_id,
+				dataType:"text",
+				type:"get",
+				success:function(res){
+					$("body").html(res);
+				}
+			})
+
+		});
+		//删除价格条件
+		$(document).on('click',"#delgoods_price",function(){
 			var _this = $(this);
 			_this.parent().hide();
 			var field = $(".default.active").attr("field");
 			var p = $(".pag.pages").text();
-			var goods_price = $(".li.nowprice>a").text();
+			var brand_id = $(".logo-list.nowbrand>li").attr('brand_id');
 			//重新获取此品牌的商品列表
 			$.ajax({
 				url:"{{url('/shop/index/price/')}}",
@@ -491,24 +515,6 @@
 					$("#td_a").html(res);
 				}
 			});
-			$.ajax({
-				url:"{{url('/shop/index/list')}}",
-				data:{'field':field,'p':p,'goods_price':goods_price},
-				type:'post',
-				dataType:'text',
-				async:false,
-				success:function(res){
-					$("#show").html(res);
-				}
-			});
-		});
-		//删除价格条件
-		$(document).on('click',"#delgoods_price",function(){
-			var _this = $(this);
-			_this.parent().hide();
-			var field = $(".default.active").attr("field");
-			var p = $(".pag.pages").text();
-			var brand_id = $(".logo-list.nowbrand>li").attr('brand_id');
 			$.ajax({
 				url:"{{url('/shop/index/list')}}",
 				data:{'field':field,'p':p,'brand_id':brand_id},
@@ -523,4 +529,3 @@
 
 	})
 </script>
-</html>

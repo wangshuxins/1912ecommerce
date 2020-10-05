@@ -671,6 +671,10 @@ $(function(){
 				success:function(res){
 					if(res==1){
 						location.href="/shop/cart";
+					}else if(res==2){
+					
+					  alert('库存不足，或者购物车已买此商品的最大库存量')
+					
 					}
 				}
 			})

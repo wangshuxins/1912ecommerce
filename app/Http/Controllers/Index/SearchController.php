@@ -47,7 +47,8 @@ class SearchController extends Controller
 				$str.="<a class='pag' href='javascript:void(0)'>".$i."</a>";
 			}
 		}
-		return view('Merchandise.Index.search',compact('dingji','brand','priceInfo','limit','str'));
+
+		return view('Merchandise.Index.search',compact('dingji','brand','priceInfo','limit','str','id'));
 	}
 	public function getPriceSection($max_price){
 
