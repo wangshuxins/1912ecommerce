@@ -12,15 +12,16 @@ use App\Model\HistoryModel;
 use App\Http\Controllers\Index\Common As Commons;
 //浏览历史
 use Illuminate\Support\Facades\Cookie;
+//收藏
+use App\Model\CollectModel;
 class HomePersonCollect extends Commons
 {
     public function homepersoncollect(){
 		$dingji=$this->daohanglan();
 		$quanbu=$this->cateinfo();
-		$id=request()->id;
-		$goods=	GoodsModel::where("goods_id",$id)->get();
-	  return view('Merchandise.Index.homepersoncollect',['dingji'=>$dingji,"quanbu"=>$quanbu,'goods'=>$goods]);
-	
+		$user_id = $this->sessionUserId();
+		$collect = CollectModel::leftJoin('shop_goods','shop_collect.goods_id','=','shop_goods.goods_id')->where("user_id",$user_id)->where('is_collect',2)->orderBy('shop_collect.add_time','desc')->get();
+	    return view('Merchandise.Index.homepersoncollect',['dingji'=>$dingji,"quanbu"=>$quanbu,'collect'=>$collect]);
 	}
 	public function homepersonfootmark(){
 		$dingji=$this->daohanglan();

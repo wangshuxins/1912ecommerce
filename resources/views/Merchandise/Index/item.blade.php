@@ -134,6 +134,15 @@
 							@endforeach
 						</div>
 						<div class="summary-wrap">
+							@if(session("users"))
+						@if($is_collect==1)
+							<span id="collect">收藏</span>
+							@else
+							<span id="collect">已收藏</span>
+							@endif
+							@else
+								<span id="nocollect">收藏</span>
+                            @endif
 							<div class="fl title">
 								<div class="control-group">
 									<div class="controls">
@@ -675,9 +684,33 @@ $(function(){
 			})
 
 		});
-	
-
-
+        //收藏
+        $(document).on("click","#collect",function(){
+              _this = $(this);
+			if(_this.text()=="收藏"){
+				_this.text("已收藏");
+				var is_collect="2";
+			}else{
+				_this.text("收藏");
+				var is_collect="1";
+			}
+			var goods_id = $(".sku-name").attr("goods_id");
+			$.ajax({
+                   url:"/shop/collect/"+goods_id,
+				   data:{is_collect:is_collect},
+				   type:"get",
+				   dataType:"json",
+				   success:function(res){
+					  console.log(res);
+				  }
+			})
+		})
+		//非登陆不可以进行收藏
+		$(document).on("click","#nocollect",function(){
+			if(confirm("是否进行登录?")){
+				location.href="/shop/login";
+			}
+		})
 	});
 
 
