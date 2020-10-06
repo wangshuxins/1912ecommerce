@@ -115,11 +115,24 @@ class ItemController extends Commons
 	// SKU修改方法
 	public function Sku_prtdetails(){
 		$goods_id = Request()->post("goods_id");
-		$attrval_id = Request()->post("attrval_id");
 		$attr_id = Request()->post("attr_id");
-		dump($goods_id);
-		dump($attrval_id);
-		dump($attr_id);
+		$attr_id = implode(":",$attr_id);
+		if(!isset($goods_id)){
+			error("请先确认商品");
+		}
+		$attrval = AttrSkuModel::where(["goods_id"=>$goods_id,"is_del"=>'1'])->get()->toArray();
+		foreach($attrval as $k=>$a){
+			$sku = $a["sku"];
+			$where = [
+				"goods_id"=>$goods_id,
+				"sku"=>$sku,
+				"is_del"=>'1',
+			];
+			if($attr_id == $sku){
+				$name = AttrSkuModel::where($where)->first();
+				ajax("查询成功",$name);
+			}
+		}
 	}
 	//收藏记录
 	public function collect($id){

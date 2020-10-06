@@ -114,7 +114,7 @@
 							<dl>
 								<dt>
 									<div class="fl title" id="attr">
-										<i attr_id ="{{$a['id']}}">{{$a["attr_name"]}}</i>
+										<i class="attr_name">{{$a["attr_name"]}}</i>
 									</div>
 								</dt>
 								<!--  class="selected" -->
@@ -122,11 +122,12 @@
 								<dt>
 								@foreach($attrval as $key=>$val)
 								@if($val["attr_id"] == $a['id'])
-									<dd>
-										<a href="javascript:;" attr_id="{{$val['id']}}" attrval_id="{{$val['attr_id']}}"; id="Add_style">
-											{{$val["attrval_name"]}}
-										</a>
-									</dd>
+								<dd>
+									<a href="javascript:;" class="see val_id" attr_id="{{$val['attr_id']}}" value="{{$val['id']}}">
+										{{$val["attrval_name"]}}
+										<span title="点击取消选择">&nbsp;</span>
+									</a>
+								</dd>
 								@endif
 								@endforeach
 								</dt>
@@ -569,32 +570,96 @@ $(function(){
 </body>
 </html>
 <script>
+	// $(document).ready(function(){
+	// 	$(document).find("#specification").find("dl:first").each();
+	// });
+
 	$(document).ready(function(){
 		$(".submit").hide();
 //————————————————————————添加样式————————————————————————————————————//
-		$(document).on("click","#Add_style",function(){
-			var _this = $(this);
-			_this.addClass("selected").parent().siblings().children().removeClass("selected");
-			var attrval_id = _this.attr("attrval_id");
-			var attr_id = _this.prev().find('.selected').find("a").attr('attr_id');
-			if(attrval_id !== "2"){
-				return false;
-			}
-			// var attr_id = _this.attr("attr_id");
-			var goods_id = $(".sku-name").attr("goods_id");
-			var url = "/shop/Sku_prtdetails";
-			$.ajax({
-				url:url,
-				type:'post',
-				data:{attrval_id:attrval_id,attr_id:attr_id,goods_id:goods_id},
-				async:true,
-				success:function(index){
-					console.log(index);
-				}
-			});
-			$("#submitdescde").hide();
-			$(".submit").show();
-		});
+	$(document).on("click",".see",function(){
+		//属性id
+		var attr_id = $(this).attr("attr_id");
+		var attr_val = $("#val_id").val();
+		// alert(attr_val);
+
+		//属性值id
+		var attr_val = $(this).attr("value");
+		//商品id
+		var goods_id = $(".sku-name").attr("goods_id");
+		//alert(goods_id);
+		//样式
+		 $(this).addClass("selected").append("<span title='点击取消选择'>&nbsp;</span>");
+         var add = $(this).parent().siblings().children().removeClass("selected");
+         var str = new Array();
+         $(".selected").each(function(){
+         	str.push($(this).attr("attr_id")+","+$(this).attr("value"));
+         })
+         //计算长度是否全部选中
+		 var selected = $(".selected").length;
+		 //alert(selected);
+		 var attr_name = $(".attr_name").length;
+		 //alert(attr_name);
+		 if(selected==attr_name){
+		 	var data = {attr_id:str,goods_id:goods_id};
+		 	var url = "/shop/Sku_prtdetails";
+		 	$.ajax({
+		 		type:"post",
+		 		data:data,
+		 		dataType:'json',
+		 		url:url,
+		 		async:false,
+		 		success:function(res){
+		 			if(res.code == 200){
+		 				$("#goods_price").html(res.data.goods_price);
+		 				$("#goods_store").text(res.data.goods_store);
+						$("#submitdescde").hide();
+						$(".submit").show();
+		 			}else{
+		 				alert("请先选择商品！");
+		 			}
+		 		}
+
+		 	})
+		 }
+	})
+//—————————————————————————————————————————————————————————————————————//
+/*		 			if(res){
+		 				$("#spe_price").text(res.spe_price);
+		 				$("#spe_number").text("库存:"+res.spe_num);
+		 			}
+*/
+		// $(document).on("click",".Add_style",function(){
+		// 	var _this = $(this);
+		// 	_this.addClass("selected").parent().siblings().children().removeClass("selected");
+		// 	var attrval_id = _this.attr("attrval_id");
+		// 	var attr_id = _this.attr("id");
+		// 	if(attrval_id !== "2"){
+		// 		return false;
+		// 	}
+		// 	var add = [];
+		// 	var arr = [];
+		// 	if(attrval_id == 1){
+		// 		add[attrval_id]=attr_id;
+		// 		return false;
+		// 	}
+		// 	if(attrval_id == 2){
+		// 		arr[attrval_id]=attr_id;
+		// 	}
+		// 	var goods_id = $(".sku-name").attr("goods_id");
+		// 	var url = "/shop/Sku_prtdetails";
+		// 	$.ajax({
+		// 		url:url,
+		// 		type:'post',
+		// 		data:{attrval_id:attrval_id,attr_id:attr_id,goods_id:goods_id},
+		// 		async:true,
+		// 		success:function(index){
+		// 			console.log(index);
+		// 		}
+		// 	});
+		// 	$("#submitdescde").hide();
+		// 	$(".submit").show();
+		// });
 //————————————————————————选择属性————————————————————————————————————————————//
 		$("#submitdescde").click(function(){
 			alert("请选择属性");
@@ -682,7 +747,6 @@ $(function(){
 					}
 				}
 			})
-
 		});
         //收藏
         $(document).on("click","#collect",function(){
