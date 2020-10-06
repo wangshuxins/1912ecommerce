@@ -619,7 +619,6 @@ $(function(){
 
 			}
 		})
-		
 //————————————————————————————————————————————————————————————//
 		$(document).on("click",".mins",function(){//减
 			var goods_price=parseInt($("#goods_price").text());//价格
@@ -670,7 +669,9 @@ $(function(){
 				type:"post",
 				success:function(res){
 					if(res==1){
-						location.href="/shop/cart";
+						if(confirm("商品已成功加入购物车!，是否进行结算")){
+							location.href="/shop/cart";
+						}
 					}else if(res==2){
 					
 					  alert('库存不足，或者购物车已买此商品的最大库存量');return;
