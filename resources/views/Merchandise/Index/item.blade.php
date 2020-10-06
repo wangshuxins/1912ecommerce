@@ -611,7 +611,6 @@ $(function(){
 		 		async:false,
 		 		success:function(res){
 		 			if(res.code == 200){
-		 				console.log(res);
 		 				$("#goods_price").html(res.data.goods_price);
 		 				$("#goods_store").text(res.data.goods_store);
 						$("#submitdescde").hide();
