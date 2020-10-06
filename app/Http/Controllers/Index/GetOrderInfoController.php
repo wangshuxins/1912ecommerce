@@ -45,11 +45,10 @@ class GetOrderInfoController extends Controller
 		$where = [
 				"is_del"=>"0",
 				"user_id"=>$user_id,
-				"is_default"=>'2',
 		];
-		if(AddressModel::where($where)->get() == null){
-			return "1";
-		}
+//		if(AddressModel::where($where)->get() == null){
+//			return "1";
+//		}
 		//地址数据
 	   $rderdata = AddressModel::where($where)->get()->toArray();
 	   foreach($rderdata as $k=>$a){
@@ -134,12 +133,14 @@ class GetOrderInfoController extends Controller
 		// 订单商品处理信息
 		$order_id = Order_InfoModel::where(["order_sn"=>$order_number,"user_id"=>$user_id])->first("order_id");
 		foreach($goods_id as $k=>$a){
-
 			$cary_name = CarModel::where(["goods_id"=>$a,"is_del"=>"1","user_id"=>$user_id])->first();
+			$goods_name = GoodsModel::where("goods_id",$a)->first();
 			$Order_GoodsModel = new Order_GoodsModel;
 			$Order_GoodsModel->user_id     = $user_id;
 			$Order_GoodsModel->order_id    = $order_id->order_id;
 			$Order_GoodsModel->goods_id    = $a;
+			$Order_GoodsModel->goods_name    = $goods_name->goods_name;
+			$Order_GoodsModel->goods_img    = $goods_name->goods_img;
 			$Order_GoodsModel->goods_prices = $cary_name->goods_totall;
 			$Order_GoodsModel->buy_number  = $cary_name->buy_number;
 			$Order_Goods  = $Order_GoodsModel->save();

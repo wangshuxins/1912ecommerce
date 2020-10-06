@@ -20,23 +20,21 @@
 <div class="checkout-steps">
 <!--收件人信息-->
 <div class="step-tit">	
-	<h5>收件人信息<span><a href="{{url('/shop/homesettingaddress')}}">新增收货地址</a></span></h5>
+	<h5>收件人地址<span><a href="{{url('/shop/homesettingaddress')}}">新增收货地址</a></span></h5>
 </div>
 <div class="step-cont">
 	<div class="addressInfo">
 		<ul class="addr-detail">
 			<li class="addr-item">
 			@foreach($rderdata as $k=>$a)
-			@if($a['is_default'] == 2)
-			<div>
-				<div class="con name"  attr_id="{{$a['id']}}"><a href="javascript:;" >{{$a["user_name"]}}<span title="点击取消选择">&nbsp;</a></div>
+			<div zi_id="1">
+					<div class="con name @if($a['is_default'] == 2)selected	@endif"  attr_id="{{$a['id']}}"><a href="javascript:;" >{{$a["user_name"]}}<span title="点击取消选择">&nbsp;</a></div>
 				<div class="con address">{{$a['province']}}-{{$a['city']}}-{{$a['area']}} {{$a["paddress"]}} <span>{{$a['tel']}}</span>
-				<span class="base">@if($a['is_default'] == 2) 默认收货 @endif</span>
+					@if($a['is_default'] == 2) <span class="base">默认收货</span>@endif
 				<span class="edittext"><a href="{{url('/shop/homesettingaddress')}}">编辑</a>&nbsp;&nbsp;<a href="{{url('/shop/homesettingaddress')}}">删除</a></span>
 			</div>
 				<div class="clearfix"></div>
 			</div>
-			 @endif
 			@endforeach
 			</li>
 		</ul>
@@ -53,7 +51,6 @@
 		<div class="step-cont">
 			<ul class="payType">
 				<li id="payname" payname="1">支付宝支付</li>
-				<li id="payname" payname="2">微信支付</li>
 			</ul>
 		</div>
 	<div class="hr"></div>
@@ -63,14 +60,14 @@
 <div class="step-cont">
 	<ul class="send-detail">
 		<li>
-		<div class="sendGoods">	
-			@foreach($goods_name as $k=>$a)						
+		<div class="sendGoods">
+			@foreach($goods_name as $k=>$a)
 			<ul class="yui3-g">
 				<li class="yui3-u-1-6">
 					<span><img src="/../{{$a['goods_img']}}"/></span>
 				</li>
 				<li class="yui3-u-7-12">
-					<div class="desc" goods_id="{{$a['goods_id']}}">{{$a["goods_name"]}}</div>
+					<div class="desc" goods_name="{{$a['goods_name']}}" goods_id="{{$a['goods_id']}}">{{$a["goods_name"]}}</div>
 					<div class="seven">7天无理由退货</div>
 				</li>
 				<li class="yui3-u-1-12">
@@ -115,18 +112,18 @@
 					<span><i class="number">1</i>件商品，总商品金额</span>
 					<em class="allprice">¥{{$unit_price}}</em>
 				</div>
-				<div class="list">
-					<span>返现：</span>
-					<em class="money">0.00</em>
-				</div>
+				{{--<div class="list">--}}
+					{{--<span>返现：</span>--}}
+					{{--<em class="money">0.00</em>--}}
+				{{--</div>--}}
 				<div class="list">
 					<span>运费：</span>
-					<em class="transport">0.00</em>
+					<em class="transport">{{$unit_price*0.01}}</em>
 				</div>
 			</div>
 		</div>
 		<div class="clearfix trade">
-			<div class="fc-price">应付金额:　<span class="price" id="total_price" total_pr="{{$unit_price}}">¥{{$unit_price}}</span></div>
+			<div class="fc-price">应付金额:　<span class="price" id="total_price" total_pr="{{$unit_price+$unit_price*0.01}}">¥{{$unit_price+$unit_price*0.01}}</span></div>
 			<!-- <div class="fc-receiverInfo">寄送至:北京市海淀区三环内 中关村软件园9号楼 收货人：某某某 159****3201</div>-->
 		</div>
 		<div class="submit">
@@ -275,21 +272,10 @@
 </html>
 <script>
 $(function() {
-	//收货地址
-	// $(".name").click(function(){
-	// 	var data = $(this).attr("attr_id");
-	// 	var url="/shop/orderaddress";
-	// 	$.ajax({
-	// 		url:url,
-	// 		type:'post',
-	// 		data:{data:data},
-	// 		async:true,
-	// 		success:function(index){
-	// 			console.log(index);
-	// 			$(".fc-receiverInfo").html("寄送至:北京市海淀区三环内 中关村软件园9号楼 收货人：某某某 159****3201");
-	// 		}
-	// 	});
-	{{--// });{{url('/shop/pay')}}--}}
+$(document).on("click",".name",function(){
+         _this = $(this);
+	     _this.parent().siblings().find(".name").removeClass("selected");
+});
 	$(".btn-xlarge").click(function(){
 	var cary_id = $(".name.selected").attr("attr_id");
 	if (cary_id == undefined) {
@@ -313,11 +299,12 @@ $(function() {
 	if (goods_id == '') {
 		return;
 	}
+
 	var url = "/shop/orderaddress";
 	$.ajax({
 		url: url,
 		type: 'post',
-		data: {goods_id: goods_id, cary_id: cary_id, payname: payname, total_price: total_price},
+		data: {goods_id: goods_id,cary_id: cary_id, payname: payname, total_price: total_price},
 		async: true,
 		dataType:'json',
 		success: function (index) {
