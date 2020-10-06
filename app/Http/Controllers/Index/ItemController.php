@@ -15,7 +15,12 @@ use App\Model\UserModel;
 use App\Model\CarModel;
 //Common
 use App\Http\Controllers\Index\Common As Commons;
-
+//SKU关联表
+use App\Model\AttrSkuModel;
+//属性值
+use App\Model\AttrvalModel;
+//属性名
+use App\Model\AttrModel;
 class ItemController extends Commons
 {
 	//浏览记录
@@ -39,8 +44,33 @@ class ItemController extends Commons
 
 				$this->saveHistoryCookie($id);
 			}
-
-       return view("Merchandise.Index.item",['dingji'=>$dingji,"quanbu"=>$quanbu,'goods'=>$goods]);
+		//####################################SKU#################################################
+		$name = AttrSkuModel::where(["goods_id"=>$id,"is_del"=>'1'])->get()->toArray();
+		$Attr = [];
+		$attrval = [];
+		foreach($name as $k=>$a){
+			$sku = explode(":",$a["sku"]);
+			foreach($sku as $k=>$a){
+				//#########################sku属性名查询###########################################
+				$key = strstr($a,",",true);
+				$attr_name = AttrModel::where("id",$key)->first();
+				$Attr[$key] =[
+					"id"=>$attr_name->id,
+					"attr_name"=>$attr_name->attr_name,
+				];
+				//#########################sku属性值查询###########################################
+				$keys_name = substr($a,strlen($a)-1,1);
+				$attrval_name = AttrvalModel::where("id",$keys_name)->first();
+				$attrval[$attrval_name->attrval_name] = [
+					"attrval_name"=>$attrval_name->attrval_name,
+					"attr_id"=>$attrval_name->attr_id,
+					"id"=>$attrval_name->id,
+				];
+				//#########################sku属性值查询###########################################
+			}
+		}
+		//####################################SKU#################################################
+       return view("Merchandise.Index.item",['dingji'=>$dingji,"quanbu"=>$quanbu,'goods'=>$goods,"Attr"=>$Attr,"attrval"=>$attrval]);
 		}
 		if(request()->isMethod("post")){
 			$goods_price=request()->goods_price;
@@ -71,7 +101,20 @@ class ItemController extends Commons
 		];
 
 		Cookie::queue('historyInfo',serialize($merge));
-
 	}
+	// SKU修改方法
+	public function Sku_prtdetails(){
+		$goods_id = Request()->post("goods_id");
+		$attrval_id = Request()->post("attrval_id");
+		$attr_id = Request()->post("attr_id");
+		dump($goods_id);
+		dump($attrval_id);
+		dump($attr_id);
+	}
+
+
+
+
+
 
 }

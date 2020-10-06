@@ -50,6 +50,7 @@ Route::prefix('shop')->group(function(){
 	Route::post('/saveinfo',"Index\HomeSettingAddress@saveinfo");//个人信息添加
 	Route::get('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe");//密码设置
     Route::get('/item/{id}',"Index\ItemController@item");//商品详情
+    Route::post('/Sku_prtdetails',"Index\ItemController@Sku_prtdetails");//商品详情SKU
     Route::post('/savecar/{id?}/{sum?}/{zongjia?}',"Index\CartController@savecar");//商品详情处理
 	Route::get('/login',"Index\LoginController@login");//登陆
 	Route::any('/logindo',"Index\LoginController@logindo");//登陆
