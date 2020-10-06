@@ -21,6 +21,8 @@ use App\Model\AttrSkuModel;
 use App\Model\AttrvalModel;
 //属性名
 use App\Model\AttrModel;
+//收藏
+use App\Model\CollectModel;
 class ItemController extends Commons
 {
 	//浏览记录
@@ -69,8 +71,16 @@ class ItemController extends Commons
 				//#########################sku属性值查询###########################################
 			}
 		}
+		$is_collect = CollectModel::select("is_collect")->where('goods_id',$id)->first();
+		if(empty($is_collect)){
+
+			$is_collect = 1;
+		     
+		}else{
+			$is_collect = $is_collect->is_collect;
+		}
 		//####################################SKU#################################################
-       return view("Merchandise.Index.item",['dingji'=>$dingji,"quanbu"=>$quanbu,'goods'=>$goods,"Attr"=>$Attr,"attrval"=>$attrval]);
+       return view("Merchandise.Index.item",['dingji'=>$dingji,"quanbu"=>$quanbu,'goods'=>$goods,"Attr"=>$Attr,"attrval"=>$attrval,'is_collect'=>$is_collect]);
 		}
 		if(request()->isMethod("post")){
 			$goods_price=request()->goods_price;
@@ -124,10 +134,28 @@ class ItemController extends Commons
 			}
 		}
 	}
+	//收藏记录
+	public function collect($id){
+		$user_id = $this->sessionUserId();
+		$is_collect = request()->is_collect;
+        $data = [
+	     	'goods_id'=>$id,
+			'is_collect'=>$is_collect,
+			'user_id'=>$user_id,
+			'add_time'=>time(),
+		];
+		$collect = new CollectModel();
 
-
-
-
-
-
+		$first = CollectModel::where('goods_id',$id)->first();
+		if($first){
+			$collect = CollectModel::where('goods_id',$id)->update(['is_collect'=>$is_collect,'add_time'=>time()]);
+		}else{
+		    $collect = $collect->insert($data);
+		}
+		if($collect){
+			success('操作成功');
+		}else{
+			 error('操作失败');
+		}
+	}
 }
