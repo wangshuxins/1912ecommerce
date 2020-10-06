@@ -62,7 +62,7 @@
 					</div>
 				</div>
 				<div class="fr itemInfo-wrap">
-					<div class="sku-name">
+					<div class="sku-name" goods_id="{{$v->goods_id}}">
 						<h4>{{$v->goods_name}}</h4>
 					</div>
 					<div class="news"><span>推荐选择下方[移动优惠购],手机套餐齐搞定,不用换号,每月还有花费返</span></div>
@@ -110,57 +110,28 @@
 					</div>
 					<div class="clearfix choose">
 						<div id="specification" class="summary-wrap clearfix">
+							@foreach($Attr as $k=>$a)
 							<dl>
 								<dt>
-									<div class="fl title">
-									<i>选择颜色</i>
-								</div>
+									<div class="fl title" id="attr">
+										<i attr_id ="{{$a['id']}}">{{$a["attr_name"]}}</i>
+									</div>
 								</dt>
-								<dd><a href="javascript:;" class="selected">金色<span title="点击取消选择">&nbsp;</span></a></dd>
-								<dd><a href="javascript:;">银色</a></dd>
-								<dd><a href="javascript:;">黑色</a></dd>
-							</dl>
-							<dl>
+								<!--  class="selected" -->
+								<!-- <dd><a href="javascript:;">金色<span title="点击取消选择">&nbsp;</span></a></dd> -->
 								<dt>
-									<div class="fl title">
-									<i>内存容量</i>
-								</div>
+								@foreach($attrval as $key=>$val)
+								@if($val["attr_id"] == $a['id'])
+									<dd>
+										<a href="javascript:;" attr_id="{{$val['id']}}" attrval_id="{{$val['attr_id']}}"; id="Add_style">
+											{{$val["attrval_name"]}}
+										</a>
+									</dd>
+								@endif
+								@endforeach
 								</dt>
-								<dd><a href="javascript:;" class="selected">16G<span title="点击取消选择">&nbsp;</span></a></dd>
-								<dd><a href="javascript:;">64G</a></dd>
-								<dd><a href="javascript:;" class="locked">128G</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>选择版本</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">公开版<span title="点击取消选择">&nbsp;</span></a></dd>
-								<dd><a href="javascript:;">移动版</a></dd>							
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>购买方式</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">官方标配<span title="点击取消选择">&nbsp;</span></a></dd>
-								<dd><a href="javascript:;">移动优惠版</a></dd>	
-								<dd><a href="javascript:;"  class="locked">电信优惠版</a></dd>
-							</dl>
-							<dl>
-								<dt>
-									<div class="fl title">
-									<i>套　　装</i>
-								</div>
-								</dt>
-								<dd><a href="javascript:;" class="selected">保护套装<span title="点击取消选择">&nbsp;</span></a></dd>
-								<dd><a href="javascript:;"  class="locked">充电套装</a></dd>	
-								
-							</dl>
-							
-							
+							</dl>	
+							@endforeach
 						</div>
 						<div class="summary-wrap">
 							<div class="fl title">
@@ -176,6 +147,7 @@
 								<ul class="btn-choose unstyled">
 									<li>							
 									<p target="_blank"   id="{{$v->goods_id}}" class="sui-btn  btn-danger addshopcar submit">加入购物车</p>
+									<p id="submitdescde">加入购物车</p>
 									</li>
 								</ul>
 							</div>
@@ -561,15 +533,9 @@
 	</div>
 	<!-- 底部栏位 -->
 		@include('layouts.index.footer')
-
-
 	</body>
-
 </html>
-
 <!--侧栏面板结束-->
-	
-
 <script type="text/javascript" src="/index/static/js/plugins/jquery/jquery.min.js"></script>
 <script type="text/javascript">
 $(function(){
@@ -583,20 +549,48 @@ $(function(){
 	},function(){
 		$("#shopcarlist").hide();
 	});
-
 })
 </script>
-<script type="text/javascript" src="/index/static/js/model/cartModel.js"></script>
-<script type="text/javascript" src="/index/static/js/plugins/jquery.easing/jquery.easing.min.js"></script>
-<script type="text/javascript" src="/index/static/js/plugins/sui/sui.min.js"></script>
-<script type="text/javascript" src="/index/static/js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
-<script type="text/javascript" src="/index/static/js/plugins/jquery.jqzoom/zoom.js"></script>
-<script type="text/javascript" src="/index/static/js/pages/index.js"></script>
+	<script type="text/javascript" src="/index/static/js/model/cartModel.js"></script>
+	<script type="text/javascript" src="/index/static/js/plugins/jquery.easing/jquery.easing.min.js"></script>
+	<script type="text/javascript" src="/index/static/js/plugins/sui/sui.min.js"></script>
+	<script type="text/javascript" src="/index/static/js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
+	<script type="text/javascript" src="/index/static/js/plugins/jquery.jqzoom/zoom.js"></script>
+	<script type="text/javascript" src="/index/static/js/pages/index.js"></script>
 </body>
-
 </html>
 <script>
 	$(document).ready(function(){
+		$(".submit").hide();
+//————————————————————————添加样式————————————————————————————————————//
+		$(document).on("click","#Add_style",function(){
+			var _this = $(this);
+			_this.addClass("selected").parent().siblings().children().removeClass("selected");
+			var attrval_id = _this.attr("attrval_id");
+			var attr_id = _this.prev().find('.selected').find("a").attr('attr_id');
+			if(attrval_id !== "2"){
+				return false;
+			}
+			// var attr_id = _this.attr("attr_id");
+			var goods_id = $(".sku-name").attr("goods_id");
+			var url = "/shop/Sku_prtdetails";
+			$.ajax({
+				url:url,
+				type:'post',
+				data:{attrval_id:attrval_id,attr_id:attr_id,goods_id:goods_id},
+				async:true,
+				success:function(index){
+					console.log(index);
+				}
+			});
+			$("#submitdescde").hide();
+			$(".submit").show();
+		});
+//————————————————————————选择属性————————————————————————————————————————————//
+		$("#submitdescde").click(function(){
+			alert("请选择属性");
+		});
+//————————————————————————————————————————————————————————————————————//
 		$(document).on("click",".plus",function(){//加
 			var _this=$(this).val();
 			// console.log(_this);
@@ -635,8 +629,6 @@ $(function(){
 					$("#goods_price").text(goods_num*goods_price);
 			}
 		})
-
-
 //————————————————————————————————————————————————————————————//
 		$(document).on("blur",".itxt",function(){//文本框
 			var _this=$(this).val();
