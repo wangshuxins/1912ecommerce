@@ -13,6 +13,8 @@ use App\Model\UserModel;
 use Illuminate\Support\Facades\Redis;
 //验证码的code
 use App\Model\Shop_codemodel;
+//购物车
+use App\Model\CarModel;
 use App\Http\Controllers\Index\Common As Commons;
 class HomeSettingAddress extends Commons
 {
@@ -38,7 +40,32 @@ class HomeSettingAddress extends Commons
 				$AddInfo[$k]['area'] = AreaModel::where('id',$v['area'])->value("name");
 			}
 			$provinceInfo = $this->getAreaInfo(0);
-			return view('Merchandise.Index.homesettingaddress',['dingji'=>$dingji,'provinceInfo'=>$provinceInfo,'add'=>$AddInfo]);
+			//—————————————————————————————————  —购—物—车—  ——————————————————————————————————————//
+
+			if(!session()->get("users")){//没有登录时   头部导航栏的购物车
+
+				$car=$this->buyListCookie();
+				//dd($car);
+				if(empty($car)){
+					$car =[];
+				}
+
+			}else{//登录的情况下
+				// $user_id = $this->sessionUserId();
+				$user_id=session("users")['user_id'];
+				$where = [
+						['user_id','=',$user_id],
+						['shop_cary.is_del','=',1]
+				];
+				$car = CarModel::join("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")
+						->where($where)
+						->orderBy('shop_cary.add_time','desc')
+						->get()->toArray();
+			}
+
+			//—————————————————————————————————————————————————————————————————————————————————————//
+
+			return view('Merchandise.Index.homesettingaddress',['dingji'=>$dingji,'provinceInfo'=>$provinceInfo,'add'=>$AddInfo,'car'=>$car]);
 	    }
 	    public function getAreaInfo($pid){
 
@@ -136,6 +163,32 @@ class HomeSettingAddress extends Commons
 			$cityInfo = $this->getAreaInfo($AddInfo['province']);
            //区/县
 			$areaInfo = $this->getAreaInfo($AddInfo['city']);
+
+			//—————————————————————————————————  —购—物—车—  ——————————————————————————————————————//
+
+			if(!session()->get("users")){//没有登录时   头部导航栏的购物车
+
+				$car=$this->buyListCookie();
+				//dd($car);
+				if(empty($car)){
+					$car =[];
+				}
+
+			}else{//登录的情况下
+				// $user_id = $this->sessionUserId();
+				$user_id=session("users")['user_id'];
+				$where = [
+						['user_id','=',$user_id],
+						['shop_cary.is_del','=',1]
+				];
+				$car = CarModel::join("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")
+						->where($where)
+						->orderBy('shop_cary.add_time','desc')
+						->get()->toArray();
+			}
+
+			//—————————————————————————————————————————————————————————————————————————————————————//
+
 
 			return view('Merchandise.Index.homesettingaddressexit',['dingji'=>$dingji,'addInfo'=>$AddInfo,'provinceInfo'=>$provinceInfo,'cityInfo'=>$cityInfo,'areaInfo'=>$areaInfo]);
 	   }
@@ -246,14 +299,64 @@ class HomeSettingAddress extends Commons
 
 	public function homesettingaddresscomplete(){
 
+		//—————————————————————————————————  —购—物—车—  ——————————————————————————————————————//
 
-		return view('Merchandise.Index.homesettingaddresscomplete');
+			if(!session()->get("users")){//没有登录时   头部导航栏的购物车
+
+				$car=$this->buyListCookie();
+				//dd($car);
+				if(empty($car)){
+					$car =[];
+				}
+
+			}else{//登录的情况下
+				// $user_id = $this->sessionUserId();
+				$user_id=session("users")['user_id'];
+				$where = [
+						['user_id','=',$user_id],
+						['shop_cary.is_del','=',1]
+				];
+				$car = CarModel::join("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")
+						->where($where)
+						->orderBy('shop_cary.add_time','desc')
+						->get()->toArray();
+			}
+
+			//—————————————————————————————————————————————————————————————————————————————————————//
+
+
+
+		return view('Merchandise.Index.homesettingaddresscomplete',['car'=>$car]);
 	}
 
 	public function homesettingaddressphone(){
 
+         //—————————————————————————————————  —购—物—车—  ——————————————————————————————————————//
 
-		return view('Merchandise.Index.homesettingaddressphone');
+			if(!session()->get("users")){//没有登录时   头部导航栏的购物车
+
+				$car=$this->buyListCookie();
+				//dd($car);
+				if(empty($car)){
+					$car =[];
+				}
+
+			}else{//登录的情况下
+				// $user_id = $this->sessionUserId();
+				$user_id=session("users")['user_id'];
+				$where = [
+						['user_id','=',$user_id],
+						['shop_cary.is_del','=',1]
+				];
+				$car = CarModel::join("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")
+						->where($where)
+						->orderBy('shop_cary.add_time','desc')
+						->get()->toArray();
+			}
+
+			//—————————————————————————————————————————————————————————————————————————————————————//
+
+		return view('Merchandise.Index.homesettingaddressphone',['car'=>$car]);
 	}
 
 	public function homesettinginfo(){
@@ -277,7 +380,31 @@ class HomeSettingAddress extends Commons
 				$AddInfo[$k]['area'] = AreaModel::where('id',$v['area'])->value("name");
 			}
 			$provinceInfo = $this->getAreaInfo(0);
-		return view('Merchandise.Index.homesettinginfo',['dingji'=>$dingji,'provinceInfo'=>$provinceInfo,'add'=>$AddInfo]);
+			 //—————————————————————————————————  —购—物—车—  ——————————————————————————————————————//
+
+			if(!session()->get("users")){//没有登录时   头部导航栏的购物车
+
+				$car=$this->buyListCookie();
+				//dd($car);
+				if(empty($car)){
+					$car =[];
+				}
+
+			}else{//登录的情况下
+				// $user_id = $this->sessionUserId();
+				$user_id=session("users")['user_id'];
+				$where = [
+						['user_id','=',$user_id],
+						['shop_cary.is_del','=',1]
+				];
+				$car = CarModel::join("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")
+						->where($where)
+						->orderBy('shop_cary.add_time','desc')
+						->get()->toArray();
+			}
+
+			//—————————————————————————————————————————————————————————————————————————————————————//
+		return view('Merchandise.Index.homesettinginfo',['dingji'=>$dingji,'provinceInfo'=>$provinceInfo,'add'=>$AddInfo,'car'=>$car]);
 	}
     public function saveinfo(Request $request){
 		$data =$request->input();
@@ -320,8 +447,32 @@ class HomeSettingAddress extends Commons
 	public function homesettingsafe(){
 		if(request()->isMethod("get")){
 			$dingji = $this->daohanglan();
-			$name = "订单";  	
-			return view('Merchandise.Index.homesettingsafe',compact("name","dingji"));
+			$name = "订单"; 
+			 //—————————————————————————————————  —购—物—车—  ——————————————————————————————————————//
+
+			if(!session()->get("users")){//没有登录时   头部导航栏的购物车
+
+				$car=$this->buyListCookie();
+				//dd($car);
+				if(empty($car)){
+					$car =[];
+				}
+
+			}else{//登录的情况下
+				// $user_id = $this->sessionUserId();
+				$user_id=session("users")['user_id'];
+				$where = [
+						['user_id','=',$user_id],
+						['shop_cary.is_del','=',1]
+				];
+				$car = CarModel::join("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")
+						->where($where)
+						->orderBy('shop_cary.add_time','desc')
+						->get()->toArray();
+			}
+
+			//—————————————————————————————————————————————————————————————————————————————————————//
+			return view('Merchandise.Index.homesettingsafe',compact("name","dingji",'car'));
 		}
 		if(request()->isMethod("post")){
 			$user_name = request()->post("user_name");
@@ -439,6 +590,34 @@ class HomeSettingAddress extends Commons
 				];
 				return json_encode($data,true);
 			}
+		}
+	}
+	public function buyListCookie(){
+
+		$cartInfos = Cookie::get('cartInfo');
+		$car = unserialize($cartInfos);
+		if(!empty($car)){
+			//数据倒顺序
+			$add_time = array_column($car,'add_time');
+
+			array_multisort($add_time,SORT_DESC,$car);
+
+			//print_r($cartInfo);exit;
+
+			foreach($car as $k=>$v){
+
+				$where = [
+						['goods_id','=',$v['goods_id']]
+				];
+
+				$arr = GoodsModel::where($where)->first()->toArray();
+
+				//print_r($goods);
+
+				$car[$k] = array_merge($v,$arr);
+
+			}
+			return $car;
 		}
 	}
 }

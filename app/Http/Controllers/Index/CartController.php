@@ -8,6 +8,7 @@ use App\Model\CarModel;
 use App\Model\GoodsModel;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\Index\Common As Commons;
+use App\Model\AttrSkuModel;
 class CartController extends Commons
 {
 	public function savecar()
@@ -16,6 +17,7 @@ class CartController extends Commons
 		$goods_num = request()->goods_num;
 		$goods_totall = request()->goods_totall;
 		$users = session("users");//用户信息
+		$sku = request()->sku;
 		//dump($users);
 		if($this->checkLogin()){//说明session存在是登录时加入购物车的
 			$user_id = $users->user_id;//用户ID
@@ -41,7 +43,7 @@ class CartController extends Commons
 						"add_time" => time(),//时间
 						"is_del" => 1
 				];
-				$sums = GoodsModel::select("goods_store")->where("goods_id", $goods_id)->first()->toArray();
+				$sums = AttrSkuModel::select("goods_store")->where("sku",$sku)->where("goods_id",$goods_id)->first()->toArray();
 				$goods_sum = ($sums['goods_store']);
 				$sumx = CarModel::select("buy_number")->where("goods_id", $goods_id)->where("goods_id", $goods_id)->first()->toArray();
 				$buy_numberx = ($sumx['buy_number']);

@@ -121,7 +121,7 @@
 								</div>
 							</li>
 						@endforeach
-						
+
 					</ul>
 				</div>
 				<div class="fr page">

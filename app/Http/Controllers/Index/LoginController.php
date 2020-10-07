@@ -15,13 +15,11 @@ class LoginController extends Commons
    public function register(){
 
 		if(request()->isMethod("get")){
-		// dump(session("code"));
-				//dump(session("code"));
+
 			return view("Merchandise.Index.register");
 		}
 		if(request()->isMethod("post")){
 			$zhi=request()->zhi;
-			// return  $zhi;
 
 			$res=UserModel::where("user_name",$zhi)->first();
 			if($res){
@@ -33,14 +31,6 @@ class LoginController extends Commons
 		}
 
 	}
-	// public function yanzheng(){
-	// 	$tel=request()->user_tel;
-	// 	$code=request()->user_code;
-	// 	if($tel!==session("code")['tel'] || $code!==session("code")['code']){
-	// 		return 1;
-	// 	}
-
-	// }
 
 	public function zhuce(){
 
@@ -48,12 +38,6 @@ class LoginController extends Commons
 			$name=request()->name;
 			$code=request()->user_code;
 			$tel =request()->user_tel;
-			// dump($pwd);
-			// dump($name);
-			// dump($code);
-			// dump($tel);
-			// dump(session()->get("code")['tel']);
-			// dump(session()->get("code")['code']);
 			if($tel!=session()->get("code")['tel'] || $code!=session()->get("code")['code']){
 			return 2;
 		}
@@ -68,9 +52,6 @@ class LoginController extends Commons
 			if($res){
 				return 1;
 			}
-
-
-
 	}
     //登录
     public function login(){
@@ -79,13 +60,6 @@ class LoginController extends Commons
     }
     public function logindo(){
         $post=request()->all();
-        //dd($post);
-        // if(!$login){
-        //     error('用户名或密码不对');
-        // }
-        // if($login->user_pwd!=$post['user_pwd']){
-        //   	error('用户名或密码不对');
-        // }
         $login=UserModel::where('user_name',$post['user_name'])->first();
 
         if(!empty($login)){
@@ -116,6 +90,9 @@ class LoginController extends Commons
                 $this->asyncHistory();
                 //同步购物车
                 $this->asyncCart();
+                if(isset($post['remember_me'])){
+                    Cookie::queue('remember',serialize($login),60*24*7);
+                }
                 success('登陆成功');
             }else{
                 if($error_num>=3){
@@ -229,6 +206,7 @@ class LoginController extends Commons
     //退出登录
     public function qiut(){
         Session()->flush();
+        Cookie::queue(Cookie::forget('remember'));
         return redirect('/');
     }
 	public function taoqiande(){//掏钱的验证码

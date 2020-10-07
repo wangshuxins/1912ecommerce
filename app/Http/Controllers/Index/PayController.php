@@ -26,7 +26,7 @@ class PayController extends Controller
         $param1 = [
             'app_id'    => '2016102200739406',
             'method'    => 'alipay.trade.page.pay',
-            'return_url'=>'http://www.shop.com/shop/paysuccess',
+            'return_url'=>'http://www.shop.com/shop/paysuccess/'.$id,
             'charset'   => 'utf-8',
             'sign_type' => 'RSA2',
             'timestamp' => date('Y-m-d H:i:s'),
@@ -65,8 +65,12 @@ class PayController extends Controller
 	   return view("Merchandise.Index.payfail");
 	}
 
-	public function paysuccess(){
-	
-	   return view("Merchandise.Index.paysuccess");
+	public function paysuccess($id){
+
+		$orderinfo = Order_InfoModel::where('order_id',$id)->get();
+
+        Order_InfoModel::where('order_id',$id)->update(['order_status'=>2]);
+		
+	   return view("Merchandise.Index.paysuccess",compact("orderinfo"));
 	}
 }

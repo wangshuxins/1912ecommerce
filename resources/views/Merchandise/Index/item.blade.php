@@ -109,6 +109,7 @@
 						</div>
 					</div>
 					<div class="clearfix choose">
+						<input type="hidden" name="sku" id="sku_name">
 						<div id="specification" class="summary-wrap clearfix">
 							@foreach($Attr as $k=>$a)
 							<dl>
@@ -157,7 +158,7 @@
 								<ul class="btn-choose unstyled">
 									<li>							
 									<p target="_blank"   id="{{$v->goods_id}}" class="sui-btn  btn-danger addshopcar submit">加入购物车</p>
-									<p id="submitdescde">加入购物车</p>
+									<p  id="submitdescde">加入购物车</p>
 									</li>
 								</ul>
 							</div>
@@ -597,7 +598,7 @@ $(function(){
          })
          //计算长度是否全部选中
 		 var selected = $(".selected").length;
-		 //alert(selected);
+//		 alert(selected);
 		 var attr_name = $(".attr_name").length;
 		 //alert(attr_name);
 		 if(selected==attr_name){
@@ -613,6 +614,7 @@ $(function(){
 		 			if(res.code == 200){
 		 				$("#goods_price").html(res.data.goods_price);
 		 				$("#goods_store").text(res.data.goods_store);
+						$("#sku_name").text(res.data.sku);
 						$("#submitdescde").hide();
 						$(".submit").show();
 		 			}else{
@@ -728,10 +730,10 @@ $(function(){
 			var goods_num=$(".itxt").val();//购买数量
 			var goods_price=$("#goods_price").attr("ids");
 			var goods_totall=goods_num*goods_price;
-		
+			var sku = $("#sku_name").text();
 			$.ajax({
 				url:"{{url('/shop/savecar')}}",
-				data:{goods_id:goods_id,goods_num:goods_num,goods_totall:goods_totall},
+				data:{goods_id:goods_id,goods_num:goods_num,goods_totall:goods_totall,sku:sku},
 				type:"post",
 				success:function(res){
 					if(res==1){

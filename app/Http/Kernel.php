@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\IndexLoginMiddleware;
 use App\Http\Middleware\RbacMiddleWare;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -63,6 +64,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin'=>RbacMiddleWare::class,
+        'index'=>IndexLoginMiddleware::class,
     ];
 
     /**

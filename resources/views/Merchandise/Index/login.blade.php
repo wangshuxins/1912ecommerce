@@ -104,6 +104,7 @@
 		//获取文本框的值
 		var user_name=$("input[name='user_name']").val();
 		var user_pwd=$("input[name='user_pwd']").val();
+		var remember_me = $('[name="remember_me"]:checked').val();
 		//验证
 		if(user_name==''){
 			alert('用户名不能为空');
@@ -114,10 +115,9 @@
 		}else if(reg.test(user_pwd)){
 			alert('密码必须是3-6位');
 		}
-		
 		$.ajax({
 			url:"{{url('shop/logindo')}}",
-			data:{user_name:user_name,user_pwd:user_pwd},
+			data:{user_name:user_name,user_pwd:user_pwd,remember_me:remember_me},
 			dataType:"json",
 			type:"post",
 			success:function(res){

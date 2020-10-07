@@ -45,12 +45,13 @@ class GetOrderInfoController extends Controller
 		$where = [
 				"is_del"=>"0",
 				"user_id"=>$user_id,
+			   
 		];
 //		if(AddressModel::where($where)->get() == null){
 //			return "1";
 //		}
 		//地址数据
-	   $rderdata = AddressModel::where($where)->get()->toArray();
+	   $rderdata = AddressModel::orderBy('is_default','desc')->where($where)->get()->toArray();
 	   foreach($rderdata as $k=>$a){
 		   	$rderdata[$k]["province"] = AreaModel::where("id",$a["province"])->first("name")->name;
 		   	$rderdata[$k]["city"] = AreaModel::where("id",$a["city"])->first("name")->name;
@@ -135,6 +136,9 @@ class GetOrderInfoController extends Controller
 		foreach($goods_id as $k=>$a){
 			$cary_name = CarModel::where(["goods_id"=>$a,"is_del"=>"1","user_id"=>$user_id])->first();
 			$goods_name = GoodsModel::where("goods_id",$a)->first();
+			$count = GoodsModel::select('goods_store')->where('goods_id',$a)->first()->toArray();
+			$count = $count['goods_store'];
+			$arr4 = GoodsModel::where('goods_id',$a)->update(['goods_store'=>$count-$cary_name->buy_number]);
 			$Order_GoodsModel = new Order_GoodsModel;
 			$Order_GoodsModel->user_id     = $user_id;
 			$Order_GoodsModel->order_id    = $order_id->order_id;
@@ -162,9 +166,9 @@ class GetOrderInfoController extends Controller
 		if($Order_Address !== true || $Order_Goods !== true || $Order_Info !== true){
 			return false;
 		}
-		// foreach($goods_id as $k=>$a){
-		// 	$Car_del = CarModel::where(["goods_id"=>$a,"is_del"=>"1","user_id"=>$user_id])->update(["is_del"=>"0"]);
-		// }
+		foreach($goods_id as $k=>$a){
+		    $Car_del = CarModel::where(["goods_id"=>$a,"is_del"=>"1","user_id"=>$user_id])->update(["is_del"=>"0"]);
+		}
 
 		return $order_id;
 	}

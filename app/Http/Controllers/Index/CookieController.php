@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cookie;
 class CookieController extends Controller
 {
     public function cookie(){
-        $cart = Cookie::get('cartInfo');
+        $cart = Cookie::get('remember');
         $cart = unserialize($cart);
         dd($cart);
     }

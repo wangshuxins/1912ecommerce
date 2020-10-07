@@ -49,11 +49,16 @@
 			<div class="paysuccess">
 				<div class="success">
 					<h3><img src="/index/static/img/_/right.png" width="48" height="48">　恭喜您，支付成功啦！</h3>
+					@foreach($orderinfo as $v)
 					<div class="paydetail">
-					<p>支付方式：支付宝</p>
-					<p>支付金额：￥1006.00元</p>
+					<p>支付方式：
+					@if($v->payname==1)支付宝@endif
+					@if($v->payname==2)微信@endif
+					</p>
+					<p>支付金额：￥{{$v->order_amount}}元</p>
 					<p class="button"><a href="{{url('/shop/homeindex')}}" class="sui-btn btn-xlarge btn-danger">查看订单</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{url('/')}}" class="sui-btn btn-xlarge ">继续购物</a></p>
 				    </div>
+					@endforeach
 				</div>
 				
 			</div>

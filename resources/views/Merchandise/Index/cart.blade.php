@@ -73,9 +73,15 @@
 						<span><em>总价（不含运费） ：</em><i class="summoney">￥0</i></span>
 						<span><em>已节省：</em><i>-¥20.00</i></span>
 					</div>
+					@if(session("users"))
 					<div class="sumbtn">
 						<a class="sum-btn" id="confirmSettlement"  target="_blank">结算</a>
 					</div>
+						@else
+						<div class="sumbtn">
+							<a class="sum-btn" id="noconfirmSettlement"  target="_blank">结算</a>
+						</div>
+						@endif
 				</div>
 			</div>
 			{{--<div class="clearfix"></div>--}}
@@ -479,6 +485,11 @@
 			//console.log(goods_id);return false;
 			location.href ="/shop/getorderinfo/"+goods_id;
 		});
-
+		//非登陆不可以进行结算
+		$(document).on("click","#noconfirmSettlement",function(){
+			if(confirm("是否进行登录?")){
+				location.href="/shop/login";
+			}
+		})
 	});
 </script>

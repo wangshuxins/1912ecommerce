@@ -14,14 +14,41 @@ use App\Http\Controllers\Index\Common As Commons;
 use Illuminate\Support\Facades\Cookie;
 //收藏
 use App\Model\CollectModel;
+//购物车
+use App\Model\CarModel;
 class HomePersonCollect extends Commons
 {
     public function homepersoncollect(){
 		$dingji=$this->daohanglan();
 		$quanbu=$this->cateinfo();
 		$user_id = $this->sessionUserId();
+		//—————————————————————————————————  —购—物—车—  ——————————————————————————————————————//
+
+			if(!session()->get("users")){//没有登录时   头部导航栏的购物车
+
+				$car=$this->buyListCookie();
+				//dd($car);
+				if(empty($car)){
+					$car =[];
+				}
+
+			}else{//登录的情况下
+				// $user_id = $this->sessionUserId();
+				$user_id=session("users")['user_id'];
+				$where = [
+						['user_id','=',$user_id],
+						['shop_cary.is_del','=',1]
+				];
+				$car = CarModel::join("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")
+						->where($where)
+						->orderBy('shop_cary.add_time','desc')
+						->get()->toArray();
+			}
+
+			//—————————————————————————————————————————————————————————————————————————————————————//
+
 		$collect = CollectModel::leftJoin('shop_goods','shop_collect.goods_id','=','shop_goods.goods_id')->where("user_id",$user_id)->where('is_collect',2)->orderBy('shop_collect.add_time','desc')->get();
-	    return view('Merchandise.Index.homepersoncollect',['dingji'=>$dingji,"quanbu"=>$quanbu,'collect'=>$collect]);
+	    return view('Merchandise.Index.homepersoncollect',['dingji'=>$dingji,"quanbu"=>$quanbu,'collect'=>$collect,'car'=>$car]);
 	}
 	public function homepersonfootmark(){
 		$dingji=$this->daohanglan();
@@ -34,7 +61,32 @@ class HomePersonCollect extends Commons
 			$historyInfo = $this->TableCookie();
 		}
 
-		return view('Merchandise.Index.homepersonfootmark',['dingji'=>$dingji,'goods'=>$historyInfo]);
+		//—————————————————————————————————  —购—物—车—  ——————————————————————————————————————//
+
+			if(!session()->get("users")){//没有登录时   头部导航栏的购物车
+
+				$car=$this->buyListCookie();
+				//dd($car);
+				if(empty($car)){
+					$car =[];
+				}
+
+			}else{//登录的情况下
+				// $user_id = $this->sessionUserId();
+				$user_id=session("users")['user_id'];
+				$where = [
+						['user_id','=',$user_id],
+						['shop_cary.is_del','=',1]
+				];
+				$car = CarModel::join("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")
+						->where($where)
+						->orderBy('shop_cary.add_time','desc')
+						->get()->toArray();
+			}
+
+			//—————————————————————————————————————————————————————————————————————————————————————//
+
+		return view('Merchandise.Index.homepersonfootmark',['dingji'=>$dingji,'goods'=>$historyInfo,'car'=>$car]);
 	}
     public function TableDb(){
 
@@ -75,6 +127,34 @@ class HomePersonCollect extends Commons
 			return $historyInfo;
 		}else{
 			return [];
+		}
+	}
+	public function buyListCookie(){
+
+		$cartInfos = Cookie::get('cartInfo');
+		$car = unserialize($cartInfos);
+		if(!empty($car)){
+			//数据倒顺序
+			$add_time = array_column($car,'add_time');
+
+			array_multisort($add_time,SORT_DESC,$car);
+
+			//print_r($cartInfo);exit;
+
+			foreach($car as $k=>$v){
+
+				$where = [
+						['goods_id','=',$v['goods_id']]
+				];
+
+				$arr = GoodsModel::where($where)->first()->toArray();
+
+				//print_r($goods);
+
+				$car[$k] = array_merge($v,$arr);
+
+			}
+			return $car;
 		}
 	}
 }

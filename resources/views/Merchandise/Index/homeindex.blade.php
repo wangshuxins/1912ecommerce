@@ -101,9 +101,8 @@ $(function(){
                                             </td>
                                             <td width="10%" class="center">
                                                 <ul class="unstyled">
-													<li><a href="#" class="sui-btn btn-info">立即付款</a></li>
-                                                    <li>取消订单</li>
-                                                    
+													<li><a href="{{url('/shop/pay/'.$v->order_id)}}" class="sui-btn btn-info">立即付款</a></li>
+                                                   <!--  <li>取消订单</li> -->  
                                                 </ul>
                                             </td>
                                         </tr>

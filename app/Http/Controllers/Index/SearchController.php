@@ -8,10 +8,12 @@ use App\Model\CategoryModel;
 use App\Model\GoodsModel;
 use App\Model\BrandModel;
 use Illuminate\Support\Facades\Cookie;
+use App\Model\carModel;
 class SearchController extends Controller
 {
 	public function search(){
 		$dingji=$this->daohanglan();//导航栏顶级类型
+		$quanbu=$this->cateinfo();//数组
 		$id=request()->id;
 		$cateInfo = CategoryModel::where('is_del',1)->get()->toArray();
 		$find = getCateId($cateInfo,$id);
@@ -47,8 +49,30 @@ class SearchController extends Controller
 				$str.="<a class='pag' href='javascript:void(0)'>".$i."</a>";
 			}
 		}
+		//—————————————————————————————————  —购—物—车—  ——————————————————————————————————————//
 
-		return view('Merchandise.Index.search',compact('dingji','brand','priceInfo','limit','str','id'));
+		if(!session()->get("users")){//没有登录时   头部导航栏的购物车
+
+			$car=$this->buyListCookie();
+			if(empty($car)){
+				$car =[];
+			}
+
+		}else{//登录的情况下
+			// $user_id = $this->sessionUserId();
+			$user_id=session("users")['user_id'];
+			$where = [
+					['user_id','=',$user_id],
+					['shop_cary.is_del','=',1]
+			];
+			$car = CarModel::join("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")
+					->where($where)
+					->orderBy('shop_cary.add_time','desc')
+					->get()->toArray();
+		}
+
+		//—————————————————————————————————————————————————————————————————————————————————————//
+		return view('Merchandise.Index.search',compact('car','dingji','brand','priceInfo','limit','str','id','quanbu'));
 	}
 	public function getPriceSection($max_price){
 
@@ -146,6 +170,34 @@ class SearchController extends Controller
 		$priceInfo = $this->getPriceSection($max_price);
 		if(Request()->ajax()){
 			return view('Merchandise.Index.priceajax',compact('priceInfo'));
+		}
+	}
+	public function buyListCookie(){
+
+		$cartInfos = Cookie::get('cartInfo');
+		$car = unserialize($cartInfos);
+		if(!empty($car)){
+			//数据倒顺序
+			$add_time = array_column($car,'add_time');
+
+			array_multisort($add_time,SORT_DESC,$car);
+
+			//print_r($cartInfo);exit;
+
+			foreach($car as $k=>$v){
+
+				$where = [
+						['goods_id','=',$v['goods_id']]
+				];
+
+				$arr = GoodsModel::where($where)->first()->toArray();
+
+				//print_r($goods);
+
+				$car[$k] = array_merge($v,$arr);
+
+			}
+			return $car;
 		}
 	}
 }

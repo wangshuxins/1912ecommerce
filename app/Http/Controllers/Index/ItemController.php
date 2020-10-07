@@ -12,6 +12,7 @@ use App\Model\GoodsModel;
 use App\Model\HistoryModel;
 //用户表
 use App\Model\UserModel;
+//购物车
 use App\Model\CarModel;
 //Common
 use App\Http\Controllers\Index\Common As Commons;
@@ -36,7 +37,34 @@ class ItemController extends Commons
     	$id=request()->id;
     	//dd($id);
     	$goods=	GoodsModel::where("goods_id",$id)->get();
-    		//dd($goods);
+
+			//—————————————————————————————————  —购—物—车—  ——————————————————————————————————————//
+
+			if(!session()->get("users")){//没有登录时   头部导航栏的购物车
+
+				$car=$this->buyListCookie();
+				//dd($car);
+				if(empty($car)){
+					$car =[];
+				}
+
+			}else{//登录的情况下
+				// $user_id = $this->sessionUserId();
+				$user_id=session("users")['user_id'];
+				$where = [
+						['user_id','=',$user_id],
+						['shop_cary.is_del','=',1]
+				];
+				$car = CarModel::join("shop_goods","shop_cary.goods_id","=","shop_goods.goods_id")
+						->where($where)
+						->orderBy('shop_cary.add_time','desc')
+						->get()->toArray();
+			}
+
+			//—————————————————————————————————————————————————————————————————————————————————————//
+
+
+			//dd($goods);
 			//判断
 			if($this->checkLogin()){
 
@@ -80,7 +108,7 @@ class ItemController extends Commons
 			$is_collect = $is_collect->is_collect;
 		}
 		//####################################SKU#################################################
-       return view("Merchandise.Index.item",['dingji'=>$dingji,"quanbu"=>$quanbu,'goods'=>$goods,"Attr"=>$Attr,"attrval"=>$attrval,'is_collect'=>$is_collect]);
+       return view("Merchandise.Index.item",['car'=>$car,'dingji'=>$dingji,"quanbu"=>$quanbu,'goods'=>$goods,"Attr"=>$Attr,"attrval"=>$attrval,'is_collect'=>$is_collect]);
 		}
 		if(request()->isMethod("post")){
 			$goods_price=request()->goods_price;
@@ -158,4 +186,36 @@ class ItemController extends Commons
 			 error('操作失败');
 		}
 	}
+	public function buyListCookie(){
+
+		$cartInfos = Cookie::get('cartInfo');
+		$car = unserialize($cartInfos);
+		if(!empty($car)){
+			//数据倒顺序
+			$add_time = array_column($car,'add_time');
+
+			array_multisort($add_time,SORT_DESC,$car);
+
+			//print_r($cartInfo);exit;
+
+			foreach($car as $k=>$v){
+
+				$where = [
+						['goods_id','=',$v['goods_id']]
+				];
+
+				$arr = GoodsModel::where($where)->first()->toArray();
+
+				//print_r($goods);
+
+				$car[$k] = array_merge($v,$arr);
+
+			}
+			return $car;
+		}
+	}
+
+
+
+
 }

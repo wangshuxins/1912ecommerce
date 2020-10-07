@@ -33,7 +33,7 @@
 								</span></li>
 				</ul>
 				<ul class="fr">
-					<li class="f-item"><a href="{{url('/shop/homeindex')}}">我的订单</a></li>
+					<li class="f-item"><a href="{{url('/shop/homeindex')}}">个人中心</a></li>
 					<li class="f-item space"></li>
 					<li class="f-item">我的品优购</li>
 					<li class="f-item space"></li>

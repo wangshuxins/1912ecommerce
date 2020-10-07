@@ -56,7 +56,7 @@
 						<label for="inputPassword" class="control-label">短信验证码：</label>
 						<div class="controls">
 							<input type="text" placeholder="短信验证码" id="code"   class="input-xfat input-xlarge"> 
-							 <button type="button" style="width:50px;height:38px;" class="taoqian">获取</button>
+							 <a href="javascript:void(0)" style="width:50px;height:38px;" class="taoqian">获取短信验证码</a>
 							<br>
 							 <span class="span_yzm"></span>
 						</div>
@@ -71,8 +71,10 @@
 					<div class="control-group">
 						<label class="control-label"></label>
 						<div class="controls btn-reg">
-							<button type="button" style="height:50px;width:70px;background color:red;" id="success" >完成注册</button>
-<!-- 							<a class="sui-btn btn-block btn-xlarge btn-danger" id="success" target="_blank">完成注册</a>
+<!-- 							<button type="button" style="height:50px;width:70px;background color:red;" id="success" >完成注册</button>
+ -->						<a class="sui-btn btn-block btn-xlarge btn-danger"id="success"  target="_blank">完成注册</a>	
+<!-- 						
+	<a class="sui-btn btn-block btn-xlarge btn-danger" id="success" target="_blank">完成注册</a>
  -->						</div>
 					</div>
 				</form>
@@ -240,7 +242,7 @@
 					 	//判断当前的秒数是否是小图或等于零的；
 					 	//清除倒计时
 					 	clearInterval(times);
-					 	$(".taoqian").text("获取");
+					 	$(".taoqian").text("获取短信验证码");
 					 	//将a标签的按钮改为不可点击
 					 	$(".span_yzm").html("");
 					 	$(".taoqian").css("pointer-events","auto");

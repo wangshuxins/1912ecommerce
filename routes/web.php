@@ -15,64 +15,64 @@
 //   return view('welcome');
 //});
 //前台路由
-Route::any('/{id?}',"Index\IndexController@index");//首页
+Route::any('/{id?}',"Index\IndexController@index")->middleware('index');//首页
 Route::prefix('shop')->group(function(){
-	Route::any('/cart/{buy?}/{totall?}',"Index\CartController@cart");//购物车;
-	Route::any('/buycar/changeNumber',"Index\CartController@changeNumber");//更改购买数量
-	Route::any('/buycar/getTotal',"Index\CartController@getTotal");//获取小计
-	Route::any('/buycar/getMoney',"Index\CartController@getMoney");//获取总价
-	Route::any('/car/del/{id?}',"Index\CartController@del");//购物车软删除;
-	Route::any('/buycar/carDel',"Index\CartController@carDel");//购物车批量软删除;
-	Route::any('/car/chongxin/{id?}',"Index\CartController@chongxin");//重新加入购物车;
-	Route::get('/cooperation',"Index\CooperationController@cooperation");//招商合作;
-	Route::get('/getorderinfo/{id}',"Index\GetOrderInfoController@getorderinfo");//结算页;
-	Route::any('/orderaddress',"Index\GetOrderInfoController@orderaddress");//订单地址;
-    Route::get('/homeindex',"Index\HomeIndexController@homeindex");//我的订单;
-    Route::get('/homeorderdetail',"Index\HomeIndexController@homeorderdetail");//订单详情;
-    Route::get('/homeorderevaluate',"Index\HomeIndexController@homeorderevaluate");//待评价
-	Route::get('/homeorderpay',"Index\HomeIndexController@homeorderpay");//待付款
-	Route::get('/homeorderreceive',"Index\HomeIndexController@homeorderreceive");//待收货
-	Route::get('/homeordersend',"Index\HomeIndexController@homeordersend");//待发货;
-	Route::get('/homepersoncollect',"Index\HomePersonCollect@homepersoncollect");//我的收藏
-    Route::get('/homepersonfootmark',"Index\HomePersonCollect@homepersonfootmark");//我的足迹
-	Route::any('/homesettingaddress',"Index\HomeSettingAddress@homesettingaddress");//设置地址
-	Route::post('/index/getArea',"Index\HomeSettingAddress@getArea");//三级联动
-	Route::post('/saveaddress',"Index\HomeSettingAddress@saveaddress");//添加地址
-	Route::post('/setDefault',"Index\HomeSettingAddress@setDefault");//设置默认
-	Route::any('/home/exit/{id}','Index\HomeSettingAddress@exit');//修改地址
+	Route::any('/cart/{buy?}/{totall?}',"Index\CartController@cart")->middleware('index');//购物车;
+	Route::any('/buycar/changeNumber',"Index\CartController@changeNumber")->middleware('index');//更改购买数量
+	Route::any('/buycar/getTotal',"Index\CartController@getTotal")->middleware('index');//获取小计
+	Route::any('/buycar/getMoney',"Index\CartController@getMoney")->middleware('index');//获取总价
+	Route::any('/car/del/{id?}',"Index\CartController@del")->middleware('index');//购物车软删除;
+	Route::any('/buycar/carDel',"Index\CartController@carDel")->middleware('index');//购物车批量软删除;
+	Route::any('/car/chongxin/{id?}',"Index\CartController@chongxin")->middleware('index');//重新加入购物车;
+	Route::get('/cooperation',"Index\CooperationController@cooperation")->middleware('index');//招商合作;
+	Route::get('/getorderinfo/{id}',"Index\GetOrderInfoController@getorderinfo")->middleware('index');//结算页;
+	Route::any('/orderaddress',"Index\GetOrderInfoController@orderaddress")->middleware('index');//订单地址;
+    Route::get('/homeindex',"Index\HomeIndexController@homeindex")->middleware('index');//我的订单;
+    Route::get('/homeorderdetail',"Index\HomeIndexController@homeorderdetail")->middleware('index');//订单详情;
+    Route::get('/homeorderevaluate',"Index\HomeIndexController@homeorderevaluate")->middleware('index');//待评价
+	Route::get('/homeorderpay',"Index\HomeIndexController@homeorderpay")->middleware('index');//待付款
+	Route::get('/homeorderreceive',"Index\HomeIndexController@homeorderreceive")->middleware('index');//待收货
+	Route::get('/homeordersend',"Index\HomeIndexController@homeordersend")->middleware('index');//待发货;
+	Route::get('/homepersoncollect',"Index\HomePersonCollect@homepersoncollect")->middleware('index');//我的收藏
+    Route::get('/homepersonfootmark',"Index\HomePersonCollect@homepersonfootmark")->middleware('index');//我的足迹
+	Route::any('/homesettingaddress',"Index\HomeSettingAddress@homesettingaddress")->middleware('index');//设置地址
+	Route::post('/index/getArea',"Index\HomeSettingAddress@getArea")->middleware('index');//三级联动
+	Route::post('/saveaddress',"Index\HomeSettingAddress@saveaddress")->middleware('index');//添加地址
+	Route::post('/setDefault',"Index\HomeSettingAddress@setDefault")->middleware('index');//设置默认
+	Route::any('/home/exit/{id}','Index\HomeSettingAddress@exit')->middleware('index');//修改地址
 	Route::any('/exitaddress','Index\HomeSettingAddress@exitaddress');//修改地址
-	Route::any('/home/del',"Index\HomeSettingAddress@del");//删除地址
-    Route::get('/homesettingaddresscomplete',"Index\HomeSettingAddress@homesettingaddresscomplete");//绑定手机号
-	Route::get('/homesettingaddressphone',"Index\HomeSettingAddress@homesettingaddressphone");//验证身份
-    Route::any('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe");//安全管理
-	Route::any('/sends/verification/code',"Index\HomeSettingAddress@sends_verification_code");//密码设置短信发送验证码
-    Route::get('/homesettinginfo',"Index\HomeSettingAddress@homesettinginfo");//个人信息
-	Route::post('/saveinfo',"Index\HomeSettingAddress@saveinfo");//个人信息添加
-	Route::get('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe");//密码设置
-    Route::get('/item/{id}',"Index\ItemController@item");//商品详情
-    Route::post('/Sku_prtdetails',"Index\ItemController@Sku_prtdetails");//商品详情SKU
-    Route::post('/savecar/{id?}/{sum?}/{zongjia?}',"Index\CartController@savecar");//商品详情处理
-	Route::get('/collect/{id}',"Index\ItemController@collect");//商品收藏
+	Route::any('/home/del',"Index\HomeSettingAddress@del")->middleware('index')->middleware('index');//删除地址
+    Route::get('/homesettingaddresscomplete',"Index\HomeSettingAddress@homesettingaddresscomplete")->middleware('index');//绑定手机号
+	Route::get('/homesettingaddressphone',"Index\HomeSettingAddress@homesettingaddressphone")->middleware('index');//验证身份
+    Route::any('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe")->middleware('index');//安全管理
+	Route::any('/sends/verification/code',"Index\HomeSettingAddress@sends_verification_code")->middleware('index');//密码设置短信发送验证码
+    Route::get('/homesettinginfo',"Index\HomeSettingAddress@homesettinginfo")->middleware('index');//个人信息
+	Route::post('/saveinfo',"Index\HomeSettingAddress@saveinfo")->middleware('index');//个人信息添加
+	Route::get('/homesettingsafe',"Index\HomeSettingAddress@homesettingsafe")->middleware('index');//密码设置
+    Route::get('/item/{id}',"Index\ItemController@item")->middleware('index');//商品详情
+    Route::post('/Sku_prtdetails',"Index\ItemController@Sku_prtdetails")->middleware('index');//商品详情SKU
+    Route::post('/savecar/{id?}/{sum?}/{zongjia?}',"Index\CartController@savecar")->middleware('index');//商品详情处理
+	Route::get('/collect/{id}',"Index\ItemController@collect")->middleware('index');//商品收藏
 	Route::get('/login',"Index\LoginController@login");//登陆
 	Route::any('/logindo',"Index\LoginController@logindo");//登陆
 	Route::any('/qiut',"Index\LoginController@qiut");//退出登录
-    Route::get('/pay/{id}',"Index\PayController@pay");//支付
-    Route::get('/payfail',"Index\PayController@payfail");//支付失败
-	Route::get('/paysuccess',"Index\PayController@paysuccess");//支付成功
+    Route::get('/pay/{id}',"Index\PayController@pay")->middleware('index');//支付
+    Route::get('/payfail',"Index\PayController@payfail")->middleware('index');//支付失败
+	Route::get('/paysuccess/{id}',"Index\PayController@paysuccess")->middleware('index');//支付成功
     Route::any('/register/{zhi?}',"Index\LoginController@register");//注册
 	Route::any('/zhuce',"Index\LoginController@zhuce");//注册
     Route::any('/yanzheng/{user_tel?}/{user_code?}',"Index\LoginController@yanzheng");//注册
     Route::any('/shoji',"Index\LoginController@shoji");//手机号唯一验证
     Route::any('/registers/taoqiande/{zhi?}',"Index\LoginController@taoqiande");//验证码
-	Route::get('/sampling',"Index\CooperationController@sampling");//商家合作
-    Route::get('/search/{id}',"Index\SearchController@search");//商品列表页
-    Route::get('/seckillindex',"Index\SeckillIndexController@seckillindex");//秒杀
-	Route::get('/seckillitem',"Index\SeckillItemController@seckillitem");//详情
-	Route::get('/shop',"Index\ShopController@shop");//我的店铺
-	Route::get('/successcart',"Index\CartController@successcart");//成功加入购物车
-	Route::get('/index/search/',"Index\SearchController@brand");//商品搜索
-	Route::post('/index/list',"Index\SearchController@indexlist");//商品列表
-	Route::get('/index/price','Index\SearchController@price');//价格重新获取
+	Route::get('/sampling',"Index\CooperationController@sampling")->middleware('index');//商家合作
+    Route::get('/search/{id}',"Index\SearchController@search")->middleware('index');//商品列表页
+    Route::get('/seckillindex',"Index\SeckillIndexController@seckillindex")->middleware('index');//秒杀
+	Route::get('/seckillitem',"Index\SeckillItemController@seckillitem")->middleware('index');//详情
+	Route::get('/shop',"Index\ShopController@shop")->middleware('index');//我的店铺
+	Route::get('/successcart',"Index\CartController@successcart")->middleware('index');//成功加入购物车
+	Route::get('/index/search/',"Index\SearchController@brand")->middleware('index');//商品搜索
+	Route::post('/index/list',"Index\SearchController@indexlist")->middleware('index');//商品列表
+	Route::get('/index/price','Index\SearchController@price')->middleware('index');//价格重新获取
 	Route::get('/cookie',"Index\CookieController@cookie");//Cookie测试
 });
         //后台登陆

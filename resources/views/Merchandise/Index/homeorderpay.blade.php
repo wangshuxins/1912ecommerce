@@ -63,68 +63,58 @@ $(function(){
 
                         <div class="order-detail">
                             <div class="orders">
-                                <div class="choose-order">
-                                    <label data-toggle="checkbox" class="checkbox-pretty checked">
-                                        <input type="checkbox" checked="checked"><span>全选</span>
-                                    </label>
-                                    <a href="" class="sui-btn btn-info btn-bordered hepay-btn">合并付款</a>
-                                    <div class="sui-pagination pagination-large top-pages">
-                                        <ul>
-                                            <li class="prev disabled"><a href="#">上一页</a></li>
+                               @foreach($homeorderpay as $v)
 
-                                            <li class="next"><a href="#">下一页</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="choose-title">
+                                 <div class="choose-title">
                                     <label data-toggle="checkbox" class="checkbox-pretty ">
-                                           <input type="checkbox" checked="checked"><span>2017-02-11 11:59　订单编号：7867473872181848  店铺：哇哈哈 <a>和我联系</a></span>
+                                           <input type="checkbox" checked="checked"><span>{{date("Y-m-d H:i:s",$v->add_time)}}　订单编号：{{$v->order_sn}}  店铺：哇哈哈 <a>和我联系</a></span>
                                      </label>
-                                    <a class="sui-btn btn-info share-btn">分享</a>
+									  <a class="sui-btn btn-info share-btn">分享</a>
                                 </div>
                                 <table class="sui-table table-bordered order-datatable">
-
                                     <tbody>
                                         <tr>
                                             <td width="35%">
-                                                <div class="typographic"><img src="/index/static/img/goods.png" />
-                                                    <a href="#" class="block-text">包邮 正品玛姬儿压缩面膜无纺布纸膜100粒 送泡瓶面膜刷喷瓶 新款</a>
+                                                <div class="typographic"><img width="50" src="/{{$v->goods_img}}" />
+                                                    <a href="#" class="block-text">包邮 {{$v->goods_name}}</a>
                                                     <span class="guige">规格：温泉喷雾150ml</span>
                                                 </div>
                                             </td>
                                             <td width="5%" class="center">
                                                 <ul class="unstyled">
-                                                    <li class="o-price">¥599.00</li>
-                                                    <li>¥299.00</li>
+                                                    <li class="o-price">¥{{$v->goods_prices}}</li>
+                                                    <li>¥{{$v->goods_prices*0.8}}</li>
                                                 </ul>
                                             </td>
-                                            <td width="5%" class="center">1</td>
-                                            <td width="8%" class="center"></td>
-                                            <td width="10%" class="center">
+                                            <td width="5%" class="center">{{$v->buy_number}}</td>
+                                            <td width="8%" class="center">
+                                               
+                                            </td>
+                                            <td width="10%" class="center" >
                                                 <ul class="unstyled">
-                                                    <li>¥299.00</li>
-                                                    <li>（含运费：￥0.00）</li>
+                                                    <li>¥{{$v->goods_prices*0.8+$v->goods_prices*0.009}}</li>
+                                                    <li>（含运费：￥{{$v->goods_prices*0.009}}）</li>
                                                 </ul>
                                             </td>
                                             <td width="10%" class="center">
                                                 <ul class="unstyled">
-                                                    <li>等待买家付款</li>
+                                                    <li>等待卖家付款</li>
                                                     <li><a href="orderDetail.html" class="btn">订单详情 </a></li>
                                                 </ul>
-
-
                                             </td>
                                             <td width="10%" class="center">
                                                 <ul class="unstyled">
-                                                    <li><a href="#" class="sui-btn btn-info">立即付款</a></li>
-                                                    <li><a href="#">取消订单</a></li>
+													<li><a href="#" class="sui-btn btn-info">立即付款</a></li>
+                                                    <li>取消订单</li>
+                                                    
                                                 </ul>
                                             </td>
                                         </tr>
-                                        </tr>
+                                        
+
                                     </tbody>
                                 </table>
+								@endforeach
 
                             </div>
 
